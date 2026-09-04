@@ -1,8 +1,8 @@
-# 💰 Realm Financial
+# 💰 Buckets.Financial
 
 A modern financial planning tool designed to help users manage, track, and plan their finances with ease and precision.
 
-**🌐 [Visit the Live Application](https://realmfinancial.netlify.app/)**
+**🌐 [Visit the Live Application](https://buckets.financial/)**
 
 ---
 
@@ -25,31 +25,7 @@ Realm Financial is a comprehensive financial planning application that empowers 
 - Node.js (v14 or higher)
 - npm or yarn package manager
 
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/DeckerDreams/Realm-Financial.git
-cd Realm-Financial
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm start
-```
-
-The application will open in your default browser at `http://localhost:3000`
-
 ## 🛠️ Tech Stack
-
-- **Frontend**: React/Vue/Angular (to be updated based on your tech)
-- **Styling**: CSS/Tailwind/Material UI (to be updated based on your tech)
-- **Backend**: Node.js/Express (if applicable)
 - **Deployment**: Netlify
 
 ## 📁 Project Structure
@@ -111,8 +87,8 @@ Have questions or feedback? Feel free to open an issue or reach out:
 ## 📊 Project Stats
 
 - **Status**: Active Development
-- **Live**: ✅ [https://realmfinancial.netlify.app/](https://realmfinancial.netlify.app/)
-- **Last Updated**: July 2026
+- **Live**: ✅ (https://buckets.financial)
+- **Last Updated**: September 2026
 
 ---
 
