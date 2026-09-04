@@ -1,10 +1,11 @@
-<title>Financial Planning</title>
+<title>Buckets</title>
 <link rel="icon" href="assets/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="assets/realm-favicon.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
 .sec{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-secondary);margin:1.4rem 0 .6rem;display:flex;justify-content:space-between;align-items:center}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.debt-rate-field{grid-column:2}
 .fin-field{margin-bottom:12px}
 .fin-lbl{font-size:13px;color:var(--color-text-secondary);margin-bottom:5px;display:block}
 .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-secondary);pointer-events:none}
@@ -40,7 +41,10 @@
 .ms-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px}
 .ms-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
 .ms-val{font-size:16px;font-weight:500;font-family:var(--font-mono)}
-.small-btn{font-size:12px;padding:3px 10px;border-radius:20px;cursor:pointer}
+.small-btn{font-size:12px;padding:3px 10px;border-radius:20px;cursor:pointer;transition:background .16s,border-color .16s,color .16s,transform .16s}
+.small-btn.applied{background:rgba(47,82,58,.12);border-color:rgba(47,82,58,.34);color:#2f523a;transform:translateY(-1px)}
+.help-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:.5px solid var(--color-border-tertiary);border-radius:50%;background:rgba(255,253,248,.86);color:var(--color-text-secondary);font-size:12px;font-weight:650;cursor:pointer}
+.help-btn:hover{color:#2f523a;background:#fff}
 .timeline-row{display:grid;grid-template-columns:auto 1fr 60px 50px;gap:8px;align-items:center;margin-bottom:12px}
 .tl-lbl{font-size:13px;color:var(--color-text-secondary);white-space:nowrap}
 .tl-val{font-size:13px;font-weight:500;font-family:var(--font-mono);text-align:right;white-space:nowrap}
@@ -69,9 +73,6 @@
 .allocation-wrap{position:relative;width:min(220px,62vw);height:min(220px,62vw);justify-self:center}
 .allocation-wrap:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#fffdf8;box-shadow:inset 0 0 0 1px rgba(136,135,128,.22),0 14px 34px rgba(54,64,45,.08);pointer-events:none}
 .allocation-wrap canvas{position:relative;width:100%!important;height:100%!important}
-.allocation-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fffdf8;box-shadow:0 0 0 1px rgba(136,135,128,.18);pointer-events:none}
-.allocation-center strong{font-size:17px;color:#2f523a;line-height:1}
-.allocation-center span{font-size:10px;color:var(--color-text-secondary);margin-top:3px}
 .warn{background:var(--color-background-warning);border-radius:var(--border-radius-md);padding:9px 12px;font-size:13px;color:var(--color-text-warning);margin:8px 0;display:none}
 .add-btn{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;margin-top:4px}
 .goal-phase{font-size:11px;color:var(--color-text-secondary);font-style:italic}
@@ -100,6 +101,11 @@
 .event-alloc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin:8px 0 12px;padding:8px;background:var(--color-background-secondary,#f6f6f6);border-radius:8px}
 .event-default-box{border:.5px solid var(--color-border-tertiary,#ddd);border-radius:8px;padding:10px;margin-bottom:12px;background:var(--color-background-secondary,#f6f6f6)}
 .bucket-type-pill{display:inline-flex;align-items:center;border:.5px solid var(--color-border-tertiary,#ddd);border-radius:999px;padding:2px 7px;font-size:10px;color:var(--color-text-secondary);background:var(--color-background-primary,#fff);margin-left:4px}
+.bucket-select{border:.5px solid rgba(87,118,90,.18);border-radius:999px;background:#fffdf8;color:var(--color-text-primary,#253229);padding:4px 26px 4px 10px;box-shadow:0 4px 14px rgba(54,64,45,.04);outline:none}
+.bucket-select:focus{border-color:rgba(47,82,58,.42);box-shadow:0 0 0 3px rgba(47,82,58,.1)}
+.bucket-select option{background:#fffdf8;color:var(--color-text-primary,#253229)}
+.income-select{border:.5px solid rgba(87,118,90,.18);border-radius:999px;background:#fffdf8;color:var(--color-text-primary,#253229);padding:4px 26px 4px 10px;box-shadow:0 4px 14px rgba(54,64,45,.04);outline:none}
+.income-select:focus{border-color:rgba(47,82,58,.42);box-shadow:0 0 0 3px rgba(47,82,58,.1)}
 .ledger-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .ledger-list{display:grid;gap:10px;margin-top:8px}
 .ledger-card{background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary,#ddd);border-radius:8px;padding:10px 12px}
@@ -126,6 +132,8 @@
 .audit-table th,.audit-table td{border-bottom:.5px solid var(--color-border-tertiary,#ddd);padding:6px;text-align:left;vertical-align:middle}
 .audit-table th{font-size:11px;color:var(--color-text-secondary);font-weight:500}
 .audit-table input,.audit-table select{font-size:12px;width:100%}
+.audit-table input.actual-bucket-check{width:18px;height:18px;accent-color:#2f523a;cursor:pointer}
+.audit-table input.actual-bucket-check:disabled{cursor:not-allowed;opacity:.28}
 .audit-month-row{background:color-mix(in srgb,var(--color-background-secondary,#f6f6f6) 80%,#fff);color:var(--color-text-secondary);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .audit-source-cell{width:58px;white-space:nowrap}
 .audit-desc-cell{min-width:280px;width:42%}
@@ -135,6 +143,21 @@
 .audit-upload-card{border:.5px solid rgba(120,120,128,.24);border-radius:8px;background:var(--color-background-primary,#fff);padding:9px}
 .audit-upload-title{font-size:12px;font-weight:650;margin-bottom:3px}
 .audit-upload-copy{font-size:11px;color:var(--color-text-secondary);line-height:1.35;margin-bottom:8px}
+.audit-privacy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:.5px solid rgba(120,120,128,.18)}
+.audit-toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);white-space:nowrap}
+.audit-toggle input{accent-color:#2f523a}
+.audit-learning-note{font-size:11px;color:var(--color-text-secondary);line-height:1.35;max-width:520px}
+.audit-learn-cell{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.audit-learned-pill{display:inline-flex;align-items:center;border:.5px solid rgba(47,82,58,.22);border-radius:999px;padding:2px 7px;font-size:10px;color:#2f523a;background:rgba(219,227,210,.42)}
+.audit-edited-pill{display:inline-flex;align-items:center;border:.5px solid rgba(154,107,47,.24);border-radius:999px;padding:2px 7px;font-size:10px;color:#7a5221;background:rgba(245,166,35,.12)}
+.audit-month-dropdown{position:relative;display:inline-block}
+.audit-month-dropdown summary{list-style:none;cursor:pointer;border:.5px solid rgba(87,118,90,.18);border-radius:999px;background:#fffdf8;color:var(--color-text-primary,#253229);padding:4px 24px 4px 10px;font-size:12px;box-shadow:0 4px 14px rgba(54,64,45,.04);min-width:136px;position:relative}
+.audit-month-dropdown summary::-webkit-details-marker{display:none}
+.audit-month-dropdown summary:after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-65%) rotate(45deg);opacity:.62}
+.audit-month-dropdown[open] summary{border-color:rgba(47,82,58,.42);box-shadow:0 0 0 3px rgba(47,82,58,.08)}
+.audit-month-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;min-width:220px;max-height:260px;overflow:auto;border:.5px solid rgba(120,120,128,.24);border-radius:12px;background:#fffdf8;box-shadow:0 16px 42px rgba(54,64,45,.18);padding:8px;display:grid;gap:4px}
+.audit-month-menu .audit-toggle{padding:5px 7px;border-radius:8px}
+.audit-month-menu .audit-toggle:hover{background:rgba(219,227,210,.34)}
 .source-peek{position:relative}
 .source-peek input{padding-right:24px}
 .source-badge{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--color-text-secondary);pointer-events:none}
@@ -155,20 +178,38 @@
 .balloon-card{background:linear-gradient(180deg,rgba(255,255,255,.72),var(--color-background-secondary));border:.5px solid rgba(120,120,128,.18);border-radius:8px;padding:12px;text-align:center;box-shadow:0 10px 28px rgba(0,0,0,.05)}
 .goal-art{width:92px;height:104px;margin:0 auto 8px;position:relative;transition:transform .18s}
 .goal-art svg{width:92px;height:104px;display:block;overflow:visible}
+.goal-png-art{width:100px;height:112px;display:grid;place-items:center;margin:0 auto 8px;position:relative;transition:transform .18s}
+.goal-png-stack{width:100%;height:100%;position:relative;display:block;filter:drop-shadow(0 8px 14px rgba(47,82,58,.10))}
+.goal-png-art.kind-balloon .goal-png-stack{transform:scale(calc(.76 + var(--goal-progress,0) * .0024));transform-origin:50% 70%}
+.goal-png-bg,.goal-png-fill{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;pointer-events:none}
+.goal-png-bg{opacity:.17;filter:grayscale(.82) saturate(.55) contrast(.9)}
+.goal-png-fill{clip-path:inset(calc(100% - var(--goal-progress,0) * 1%) 0 0 0);transition:clip-path .28s ease,transform .28s ease,opacity .28s ease}
+.goal-png-art.complete .goal-png-fill{clip-path:inset(0 0 0 0)}
 .goal-art-button{appearance:none;border:0;background:transparent;padding:0;margin:0 auto;display:block;cursor:pointer;border-radius:8px}
 .goal-art-button:focus-visible{outline:2px solid var(--color-accent,#007aff);outline-offset:3px}
 .goal-art-button:hover .goal-art{transform:translateY(-1px)}
 .balloon-fill,.castle-block,.plant-grow{transition:height .25s,transform .25s,opacity .25s}
-.chart-toggles{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary);margin:6px 0 10px}
+.chart-toggles{display:flex;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary);margin:6px 0 10px}
+.chart-toggle-key{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:.5px solid rgba(47,82,58,.12);border-radius:999px;background:rgba(255,253,248,.58);box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
+.chart-toggle-key input{margin:0;accent-color:currentColor}
+.chart-key-swatch{width:18px;height:7px;border-radius:999px;display:inline-block;border:1px solid currentColor;opacity:.85;flex:0 0 auto}
+.chart-key-line{height:2px;background:currentColor;border:0}
+.chart-key-stack{display:grid;gap:3px;padding:6px 8px;border:.5px solid rgba(47,82,58,.12);border-radius:14px;background:rgba(255,253,248,.58);box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
+.chart-key-stack .chart-toggle-key{border:0;background:transparent;box-shadow:none;padding:0}
+.chart-key-cone{font-size:11px;opacity:.78}
 .realm-wrap{min-height:100vh;padding:1rem 0 .5rem;background:radial-gradient(circle at 12% 0%,rgba(219,227,210,.9),transparent 32rem),radial-gradient(circle at 88% 8%,rgba(200,162,74,.16),transparent 28rem),linear-gradient(180deg,#fffdf8 0%,#faf7ef 55%,#f3eee2 100%);color:var(--color-text-primary,#253229)}
-.realm-wrap .app-topbar{position:relative;display:flex;align-items:center;justify-content:center;background:transparent;border:0;border-radius:0;padding:2px 4px 8px;box-shadow:none;backdrop-filter:none}
-.realm-brand{display:flex;align-items:center;gap:14px}
+.realm-wrap .app-topbar{position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 14%,rgba(255,253,248,.88),rgba(255,253,248,0) 68%);border:0;border-radius:0;padding:2px 4px 12px;box-shadow:none;backdrop-filter:none}
+.realm-brand{width:100%;display:grid;grid-template-columns:124px minmax(160px,1fr) 124px;align-items:center;gap:10px;position:relative;padding:4px 14px 9px}
+.realm-brand:after{content:"";position:absolute;left:23%;right:19%;bottom:6px;height:18px;background:linear-gradient(90deg,rgba(86,163,164,0),rgba(86,163,164,.16),rgba(47,82,58,.10),rgba(86,163,164,0));clip-path:polygon(0 62%,8% 48%,18% 58%,28% 40%,39% 56%,50% 42%,61% 58%,72% 42%,84% 55%,100% 45%,100% 100%,0 100%);filter:blur(.2px);pointer-events:none}
 .realm-logo{width:94px;height:82px;display:block;overflow:visible;filter:drop-shadow(0 12px 22px rgba(16,38,61,.12));flex:0 0 auto}
 .realm-logo-r{fill:none;stroke:#10263d;stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round}
 .realm-photo-logo{display:block;width:156px;height:auto;max-height:122px;object-fit:contain;object-position:left center;mix-blend-mode:multiply;filter:drop-shadow(0 8px 14px rgba(16,38,61,.08));opacity:.98}
-.realm-wordmark{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;color:#10263d;text-align:center}
-.realm-wordmark-main{font-family:"Bodoni 72","Didot","Cormorant Garamond",Georgia,Cambria,serif;font-size:30px;font-weight:400;letter-spacing:.06em;line-height:.95}
-.realm-wordmark-sub{display:block;font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#56705c;white-space:nowrap}
+.realm-wordmark{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;color:#10263d;text-align:center}
+.realm-wordmark-main{font-family:"Copperplate","Avenir Next Condensed","Arial Narrow","Trebuchet MS",sans-serif;font-size:40px;font-weight:800;letter-spacing:.14em;line-height:.9;text-transform:uppercase;color:#173322;-webkit-text-stroke:.35px rgba(23,51,34,.18);text-shadow:1px 1px 0 rgba(255,253,248,.9),2px 2px 0 rgba(47,82,58,.09),-1px 0 0 rgba(154,107,47,.16);filter:contrast(1.06)}
+.realm-wordmark-main:after{content:"";display:block;height:5px;margin:5px 7px 0;background:linear-gradient(90deg,rgba(47,82,58,.78),rgba(47,82,58,.16)),repeating-linear-gradient(90deg,transparent 0 8px,rgba(154,107,47,.42) 8px 10px,transparent 10px 16px);clip-path:polygon(0 35%,96% 0,100% 60%,3% 100%);opacity:.72}
+.realm-wordmark-sub{display:block;font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#7a5a2a;white-space:nowrap}
+.buckets-mark-img{width:116px;height:116px;object-fit:contain;display:block;justify-self:start;filter:drop-shadow(0 10px 18px rgba(30,43,29,.12)) saturate(.98);transform:rotate(-1deg)}
+.buckets-wordmark-img{width:min(440px,48vw);height:auto;max-height:90px;object-fit:contain;display:block;justify-self:center;margin-top:0;filter:drop-shadow(0 8px 16px rgba(23,51,34,.07)) brightness(1.04) saturate(.92);opacity:.96;position:relative;z-index:1}
 .realm-wrap .app-title{font-family:Georgia,Cambria,serif;font-size:31px;font-weight:500;letter-spacing:.25em;color:#10263d;line-height:1}
 .realm-wrap .app-subtitle{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:11px;text-transform:uppercase;letter-spacing:.28em;color:#10263d;white-space:nowrap}
 .realm-wrap .app-subtitle:before,.realm-wrap .app-subtitle:after{content:"";width:36px;height:1px;background:#9a6b2f;opacity:.8}
@@ -180,6 +221,23 @@
 .realm-wrap .nav-btn.active{background:#fffaf1;color:#2f523a}
 .realm-wrap .bucket-row,.realm-wrap .goal-row,.realm-wrap .bucket-goal-row,.realm-wrap .switch-row,.realm-wrap .ms-card,.realm-wrap .audit-panel,.realm-wrap .calc-box{border-radius:12px;background:rgba(255,253,248,.72);border:.5px solid rgba(87,118,90,.14)}
 .realm-prayer textarea{width:100%;min-height:96px;border:1px solid rgba(87,118,90,.22);border-radius:12px;background:#fffdf8;color:var(--color-text-primary,#253229);padding:10px 12px;font-size:13px;resize:vertical}
+.feedback-form{display:grid;gap:10px}
+.feedback-form label{display:grid;gap:5px;font-size:12px;color:var(--color-text-secondary)}
+.feedback-form input,.feedback-form textarea{width:100%;border:1px solid rgba(87,118,90,.22);border-radius:12px;background:#fffdf8;color:var(--color-text-primary,#253229);padding:10px 12px;font-size:13px}
+.feedback-form textarea{min-height:120px;resize:vertical}
+.coaching-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px);gap:18px;align-items:start}
+.coaching-intro{padding:16px 18px;border:.5px solid rgba(87,118,90,.16);border-radius:18px;background:linear-gradient(180deg,rgba(255,253,248,.82),rgba(246,251,246,.62));box-shadow:0 12px 30px rgba(51,75,34,.046),inset 0 1px 0 rgba(255,255,255,.76)}
+.coaching-title{font-family:"Avenir Next Condensed","Arial Narrow","Avenir Next",Arial,sans-serif;font-size:23px;font-weight:800;letter-spacing:.04em;color:#102a27;margin-bottom:6px}
+.coaching-copy{font-size:13px;line-height:1.55;color:var(--color-text-secondary)}
+.coaching-form{display:grid;gap:12px;padding:16px;border:.5px solid rgba(87,118,90,.16);border-radius:18px;background:rgba(255,253,248,.76);box-shadow:0 14px 34px rgba(47,82,58,.06),inset 0 1px 0 rgba(255,255,255,.76)}
+.coaching-form label{display:grid;gap:6px;font-size:12px;color:var(--color-text-secondary)}
+.coaching-form input,.coaching-form select,.coaching-form textarea{width:100%;font-size:13px}
+.coaching-form textarea{min-height:96px;resize:vertical}
+.coaching-checks{display:grid;gap:7px;padding:2px 0 4px}
+.coaching-checks label{display:grid;grid-template-columns:18px 1fr;align-items:center;gap:9px;min-height:34px;padding:7px 10px;border:.5px solid rgba(87,118,90,.12);border-radius:12px;background:rgba(255,253,248,.58);color:var(--color-text-primary);font-size:13px;line-height:1.25}
+.coaching-checks input{width:15px;height:15px;margin:0;justify-self:center}
+.coaching-status{font-size:12px;color:var(--color-text-secondary);min-height:18px}
+.netlify-detect{display:none}
 .realm-encouragement{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:linear-gradient(180deg,rgba(219,227,210,.58),rgba(255,253,248,.9));border:1px solid rgba(87,118,90,.18);font-size:14px;line-height:1.55;color:#2f523a}
 .realm-encouragement-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9a7a2f;margin-bottom:4px}
 .privacy-top{margin-left:auto;display:flex;justify-content:flex-end}
@@ -188,24 +246,95 @@
 .privacy-note{border:1px solid rgba(87,118,90,.16);border-radius:12px;padding:11px 13px;margin:10px 0;background:rgba(255,253,248,.72)}
 .privacy-title{font-size:13px;font-weight:650;color:#2f523a}
 .privacy-copy{font-size:12px;color:var(--color-text-secondary);margin-top:2px;line-height:1.45}
-@media(max-width:700px){.realm-wrap .app-topbar{justify-content:space-between;gap:8px;padding:7px 9px 7px 10px}.realm-brand{gap:8px}.realm-photo-logo{width:min(104px,28vw);max-height:80px}.realm-wordmark-main{font-size:22px;letter-spacing:.04em}.realm-wordmark-sub{font-size:8px;letter-spacing:.14em}.realm-wordmark-sub:before{width:16px}.realm-spiritual-center{position:static;transform:none;margin-left:auto}.realm-logo{width:72px;height:64px}.realm-wrap .app-title{font-size:25px}.realm-wrap .app-subtitle{font-size:9px;letter-spacing:.18em}.realm-wrap .app-subtitle:before,.realm-wrap .app-subtitle:after{width:18px}.realm-header-actions{position:static;transform:none;gap:5px}.god-btn{padding:8px 9px;font-size:12px}.privacy-btn{padding:5px 7px;font-size:10px}}
-@media(max-width:640px){.allocation-panel{grid-template-columns:1fr}.goal-row,.bucket-goal-row,.switch-row,.time-strip{grid-template-columns:1fr}.chart-tools{grid-template-columns:1fr 1fr 54px}.chart-stage{grid-template-columns:40px 1fr}}
-@media(max-width:500px){.two-col{grid-template-columns:1fr}.bucket-row{grid-template-columns:18px 14px 1fr 58px 44px 68px 30px 62px;gap:4px;padding:6px 8px}.bkt-del,.goal-del{font-size:10px;padding:4px 6px}.debt-row,.event-row,.event-line,.account-row,.ledger-top{grid-template-columns:1fr}.ledger-amount{text-align:left}.audit-table{font-size:11px}.modal{padding:12px}}
+.bucket-help-link{display:inline-flex;align-items:center;gap:6px;margin:-2px 0 8px;color:var(--color-text-secondary);font-size:12px;background:transparent;border:0;padding:0;cursor:pointer}
+.bucket-help-link:hover{color:#2f523a}
+.bucket-help-list{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}
+.bucket-help-list .bucket-help-card{grid-column:span 2}
+.bucket-help-list .bucket-help-card:nth-child(n+4){grid-column:span 3}
+.bucket-help-card{border:.5px solid rgba(87,118,90,.16);border-radius:14px;padding:12px 14px;background:rgba(255,253,248,.82);box-shadow:0 10px 24px rgba(54,64,45,.06)}
+.bucket-help-title{font-size:13px;font-weight:650;color:#2f523a;margin-bottom:3px}
+.bucket-help-copy{font-size:12px;color:var(--color-text-secondary);line-height:1.45}
+
+/* Buckets visual system: frosted bamboo glass, crisp ink, and soft financial garden tones. */
+.realm-wrap{--bucket-ink:#102a27;--bucket-green:#34452c;--bucket-sage:#9aa47c;--bucket-glass:#f0f4f0;--bucket-teal:#b8dcd8;--bucket-clay:#b85d4f;--bucket-gold:#b98224;--bucket-paper:#fffdf8;--bucket-line:rgba(51,75,34,.12);font-family:"Avenir Next","Inter","Helvetica Neue",Arial,sans-serif;background:radial-gradient(circle at 7% 3%,rgba(240,244,240,.86),transparent 24rem),radial-gradient(circle at 88% 10%,rgba(184,220,216,.16),transparent 28rem),radial-gradient(circle at 74% 82%,rgba(184,93,79,.045),transparent 23rem),linear-gradient(180deg,#fffdf8 0%,#faf8f0 50%,#f0ebdf 100%);color:var(--bucket-ink)}
+.realm-wrap:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(96deg,transparent 0 7%,rgba(51,75,34,.018) 7% 7.2%,transparent 7.2% 21%,rgba(51,75,34,.014) 21% 21.16%,transparent 21.16% 100%),radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.82),transparent 44rem);mix-blend-mode:multiply}
+.realm-wrap .app-topbar{background:linear-gradient(180deg,rgba(255,253,248,.94),rgba(255,253,248,.56));border-bottom:.5px solid rgba(51,75,34,.075);padding-top:3px}
+.realm-brand{grid-template-columns:152px minmax(240px,1fr) 152px;gap:60px}
+.realm-brand:after{left:29%;right:22%;background:linear-gradient(90deg,rgba(169,213,208,0),rgba(169,213,208,.14),rgba(237,241,235,.55),rgba(184,93,79,.045),rgba(169,213,208,0));opacity:.78}
+.sec{font-family:"Avenir Next Condensed","Arial Narrow","Avenir Next",Arial,sans-serif;font-size:12px;font-weight:800;letter-spacing:.15em;color:var(--bucket-green)}
+.fin-lbl,.bucket-hint,.audit-status,.save-status,.tl-lbl,.ms-lbl,.source-meta{color:rgba(16,42,39,.62)}
+input,select,textarea{border:1px solid rgba(51,75,34,.15);border-radius:14px;background:rgba(255,253,248,.76);color:var(--bucket-ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 6px 18px rgba(51,75,34,.035);outline:none;transition:border-color .16s,box-shadow .16s,background .16s,transform .16s}
+input:focus,select:focus,textarea:focus{border-color:rgba(143,155,104,.52);background:#fffefb;box-shadow:0 0 0 3px rgba(169,213,208,.14),inset 0 1px 0 rgba(255,255,255,.96)}
+input[type="range"]{box-shadow:none;accent-color:var(--bucket-teal)}
+input[type="checkbox"]{accent-color:var(--bucket-green)}
+.small-btn,.add-btn,.god-btn,.privacy-btn,.bkt-del,.goal-del,.modal-close{border:1px solid rgba(51,75,34,.18);background:linear-gradient(180deg,rgba(255,253,248,.90),rgba(226,233,221,.62));color:var(--bucket-green);border-radius:999px;box-shadow:0 8px 20px rgba(51,75,34,.065),inset 0 1px 0 rgba(255,255,255,.86);font-family:"Avenir Next","Inter","Helvetica Neue",Arial,sans-serif;font-weight:650;letter-spacing:.01em}
+.small-btn:hover,.add-btn:hover,.god-btn:hover,.privacy-btn:hover,.bkt-del:hover,.goal-del:hover,.modal-close:hover{background:linear-gradient(180deg,#fffefb,rgba(218,229,212,.75));border-color:rgba(126,152,74,.42);color:#263f21;transform:translateY(-1px)}
+.small-btn:disabled,.nav-btn:disabled{opacity:.48;transform:none}
+.app-nav{background:rgba(255,253,248,.64);border-color:rgba(47,82,58,.14);border-radius:18px;box-shadow:0 14px 34px rgba(47,82,58,.07),inset 0 1px 0 rgba(255,255,255,.76)}
+.nav-btn{border-radius:999px;color:rgba(16,42,39,.68);font-weight:650}
+.realm-wrap .nav-btn.active{background:linear-gradient(180deg,#fffefb,rgba(223,232,223,.76));color:var(--bucket-ink);box-shadow:0 8px 20px rgba(47,82,58,.08),inset 0 -2px 0 rgba(126,152,74,.32)}
+.save-tools{padding:8px 10px;border:.5px solid rgba(47,82,58,.10);border-radius:18px;background:rgba(255,253,248,.48);box-shadow:0 10px 26px rgba(47,82,58,.04)}
+.bucket-row,.goal-row,.bucket-goal-row,.switch-row,.ms-card,.audit-panel,.calc-box,.event-group,.event-default-box,.ledger-card,.balloon-card,.audit-upload-card,.privacy-note,.bucket-help-card{background:linear-gradient(180deg,rgba(255,253,248,.80),rgba(250,252,248,.58));border:.5px solid rgba(51,75,34,.115);border-radius:16px;box-shadow:0 12px 30px rgba(51,75,34,.046),inset 0 1px 0 rgba(255,255,255,.76)}
+.bucket-row{border-left:3px solid rgba(143,155,104,.18)}
+.bucket-row:hover,.goal-row:hover,.bucket-goal-row:hover,.switch-row:hover,.ledger-card:hover{border-color:rgba(143,155,104,.28);box-shadow:0 16px 34px rgba(51,75,34,.065),inset 0 1px 0 rgba(255,255,255,.82)}
+.bucket-dot{border-radius:50%;box-shadow:0 0 0 2px rgba(255,253,248,.9),0 6px 14px rgba(47,82,58,.12)}
+.bucket-color{border-radius:999px;background:#fffdf8}
+.strip,.ledger-bar,.asset-bar{background:rgba(255,253,248,.84);border:.5px solid rgba(47,82,58,.12);box-shadow:inset 0 1px 4px rgba(47,82,58,.08)}
+.seg,.ledger-seg,.asset-fill{border-radius:999px}
+.modal-backdrop{background:rgba(16,42,39,.36);backdrop-filter:blur(10px)}
+.modal{background:linear-gradient(180deg,rgba(255,253,248,.96),rgba(246,251,246,.94));border-color:rgba(47,82,58,.18);border-radius:20px;box-shadow:0 24px 70px rgba(16,42,39,.24)}
+.modal-title{font-family:"Avenir Next Condensed","Arial Narrow","Avenir Next",Arial,sans-serif;font-size:20px;font-weight:800;letter-spacing:.06em;color:var(--bucket-ink)}
+.audit-drop{border-color:rgba(126,152,74,.30);border-radius:18px;background:linear-gradient(135deg,rgba(255,253,248,.82),rgba(223,232,223,.52));box-shadow:inset 0 1px 0 rgba(255,255,255,.78)}
+.audit-source-pill,.bucket-type-pill,.ledger-chip,.audit-learned-pill,.audit-edited-pill,.date-chip{border-color:rgba(47,82,58,.14);background:rgba(255,253,248,.72);border-radius:999px}
+.audit-table th{color:rgba(16,42,39,.58);font-weight:750;letter-spacing:.04em}
+.audit-table th,.audit-table td{border-bottom:.5px solid rgba(47,82,58,.10)}
+.audit-month-row{background:linear-gradient(90deg,rgba(206,239,238,.34),rgba(255,253,248,.56));color:var(--bucket-green)}
+.source-pop{background:rgba(255,253,248,.96);border-color:rgba(60,166,165,.22);border-radius:14px;box-shadow:0 18px 44px rgba(16,42,39,.18)}
+.total-bar.ok{background:linear-gradient(90deg,rgba(223,232,223,.78),rgba(244,231,199,.45));color:#2f4b2a}
+.total-bar.bad,.warn{background:linear-gradient(90deg,rgba(251,231,216,.78),rgba(255,253,248,.62));color:#99552f}
+.chart-shell,.allocation-wrap{filter:drop-shadow(0 14px 24px rgba(47,82,58,.06))}
+.allocation-wrap:before{background:rgba(255,253,248,.86);box-shadow:inset 0 0 0 1px rgba(47,82,58,.14),0 14px 34px rgba(47,82,58,.08)}
+.realm-encouragement{background:linear-gradient(180deg,rgba(223,232,223,.58),rgba(255,253,248,.9));border-color:rgba(126,152,74,.22);border-radius:16px}
+.realm-encouragement-title{color:var(--bucket-gold);font-weight:800;letter-spacing:.12em}
+@media(max-width:700px){.realm-wrap .app-topbar{justify-content:space-between;gap:8px;padding:7px 9px 7px 10px}.realm-brand{grid-template-columns:82px 1fr;gap:16px;padding:2px 0 7px}.realm-brand:after{left:34%;right:8%;bottom:3px}.buckets-mark-img{width:74px;height:74px}.buckets-wordmark-img{width:min(240px,48vw);max-height:60px}.realm-photo-logo{width:min(104px,28vw);max-height:80px}.realm-wordmark-main{font-size:22px;letter-spacing:.04em}.realm-wordmark-sub{font-size:8px;letter-spacing:.14em}.realm-wordmark-sub:before{width:16px}.realm-spiritual-center{position:static;transform:none;margin-left:auto}.realm-logo{width:72px;height:64px}.realm-wrap .app-title{font-size:25px}.realm-wrap .app-subtitle{font-size:9px;letter-spacing:.18em}.realm-wrap .app-subtitle:before,.realm-wrap .app-subtitle:after{width:18px}.realm-header-actions{position:static;transform:none;gap:5px}.god-btn{padding:8px 9px;font-size:12px}.privacy-btn{padding:5px 7px;font-size:10px}}
+@media(max-width:640px){.bucket-help-list{grid-template-columns:1fr}.bucket-help-list .bucket-help-card{grid-column:auto}.allocation-panel{grid-template-columns:1fr}.goal-row,.bucket-goal-row,.switch-row,.time-strip{grid-template-columns:1fr}.chart-tools{grid-template-columns:1fr 1fr 54px}.chart-stage{grid-template-columns:40px 1fr}}
+@media(max-width:760px){.coaching-page{grid-template-columns:1fr}}
+@media(max-width:500px){.two-col{grid-template-columns:1fr}.debt-rate-field{grid-column:auto}.bucket-row{grid-template-columns:18px 14px 1fr 58px 44px 68px 30px 62px;gap:4px;padding:6px 8px}.bkt-del,.goal-del{font-size:10px;padding:4px 6px}.debt-row,.event-row,.event-line,.account-row,.ledger-top{grid-template-columns:1fr}.ledger-amount{text-align:left}.audit-table{font-size:11px}.modal{padding:12px}}
 </style>
 
 <div class="realm-wrap">
+<form class="netlify-detect" name="buckets-feedback" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="buckets-feedback">
+  <input name="bot-field">
+  <input name="name">
+  <textarea name="notes"></textarea>
+  <input name="plan">
+  <input name="page">
+</form>
+<form class="netlify-detect" name="buckets-coaching-referral" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="buckets-coaching-referral">
+  <input name="bot-field">
+  <input name="name">
+  <input name="email">
+  <input name="goal_type">
+  <input name="timeline">
+  <textarea name="success"></textarea>
+  <textarea name="challenge"></textarea>
+  <input name="support">
+  <textarea name="notes"></textarea>
+  <input name="plan">
+  <input name="page">
+</form>
 
 <div class="app-topbar">
   <div class="realm-brand">
-    <img class="realm-photo-logo" src="assets/realm-logo-header.png" alt="Realm Financial Planning">
-    <div class="realm-wordmark" aria-hidden="true">
-      <div class="realm-wordmark-main">Realm</div>
-      <div class="realm-wordmark-sub">Financial Planner</div>
-    </div>
+    <img class="buckets-mark-img" src="assets/buckets-glass-mark-v2.png" alt="">
+    <img class="buckets-wordmark-img" src="assets/buckets-glass-wordmark-v2.png" alt="Buckets">
   </div>
   <div class="realm-header-actions">
-    <button class="god-btn" onclick="openGodModal()">Give it to God</button>
+    <button class="god-btn" onclick="openGodModal()" aria-label="Gratitude reflection" title="Gratitude reflection">Gratitude</button>
     <button class="privacy-btn" onclick="openPrivacyModal()">Privacy</button>
+    <button class="privacy-btn" onclick="openFeedbackModal()">Feedback</button>
   </div>
 </div>
 <div class="save-tools">
@@ -227,6 +356,7 @@
   <button class="nav-btn" data-view-target="projection" onclick="setView('projection')">Projection</button>
   <button class="nav-btn" data-view-target="snapshot" onclick="setView('snapshot')">Snapshot</button>
   <button class="nav-btn" data-view-target="events" onclick="setView('events')">Events</button>
+  <button class="nav-btn" data-view-target="coaching" onclick="setView('coaching')">Coaching</button>
 </div>
 
 <div class="app-view active" data-view="plan">
@@ -242,18 +372,10 @@
     <div style="position:relative"><span class="pfx">$</span><input type="number" id="f-debt" value="" min="0" class="has-pfx" style="width:100%"></div>
     <button class="small-btn" style="margin-top:6px" onclick="openDebtModal()">Advanced debt</button>
   </div>
-  <div class="fin-field">
+  <div class="fin-field debt-rate-field">
     <label class="fin-lbl" for="f-rate" id="f-rate-label">Debt interest rate</label>
     <div style="position:relative"><input type="number" id="f-rate" value="" min="0" max="40" step="0.5" class="has-sfx" style="width:100%;padding-right:26px"><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-secondary);pointer-events:none">%</span></div>
     <div class="bucket-hint" id="f-rate-hint">Use Advanced debt for multiple APRs.</div>
-  </div>
-  <div class="fin-field">
-    <label class="fin-lbl" for="f-savings">Current emergency savings</label>
-    <div style="position:relative"><span class="pfx">$</span><input type="number" id="f-savings" value="" min="0" class="has-pfx" style="width:100%"></div>
-  </div>
-  <div class="fin-field">
-    <label class="fin-lbl" for="f-irate">Expected investment return</label>
-    <div style="position:relative"><input type="number" id="f-irate" value="" min="0" max="20" step="0.5" class="has-sfx" style="width:100%;padding-right:26px"><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-secondary);pointer-events:none">%</span></div>
   </div>
 </div>
 
@@ -262,7 +384,7 @@
 <div class="sec">
   <span>Allocation buckets</span>
 </div>
-<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Use buckets for destinations like 401(k), Roth IRA, brokerage, HSA, travel, or sinking funds.</div>
+<button class="bucket-help-link" onclick="openBucketHelpModal()" aria-label="Explain allocation bucket types"><span class="help-btn" aria-hidden="true">?</span> Bucket types </button>
 <div style="display:grid;grid-template-columns:16px 1fr 96px 58px 88px 34px 72px;gap:6px;padding:0 10px 6px;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:6px">
   <span></span><span style="font-size:11px;color:var(--color-text-secondary)">Bucket</span>
   <span style="font-size:11px;color:var(--color-text-secondary)">Slider</span>
@@ -284,7 +406,6 @@
   <div>
     <div class="allocation-wrap" id="allocation-wrap">
       <canvas id="allocation-chart" role="img" aria-label="Pie chart showing monthly allocation percentages">Monthly allocation pie chart.</canvas>
-      <div class="allocation-center" aria-hidden="true"><strong id="allocation-center-pct">0%</strong><span id="allocation-center-dollars">$0/mo</span></div>
     </div>
   </div>
   <div class="chart-leg" id="allocation-leg"></div>
@@ -298,7 +419,7 @@
 <div class="time-strip">
   <div>
     <div class="time-strip-title">Planning timeline</div>
-    <div class="time-strip-copy">This sets how far Realm projects debt payoff, goal growth, and asset snapshots.</div>
+    <div class="time-strip-copy">This sets how far Buckets projects debt payoff, goal growth, and asset snapshots.</div>
   </div>
   <div class="year-control" data-year-control></div>
 </div>
@@ -309,6 +430,8 @@
   </div>
   <div class="focus-control" data-focus-control></div>
 </div>
+<div class="sec">Goal progress</div>
+<div class="balloon-grid" id="goal-balloons"></div>
 <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Set bucket targets here. Phase switches are optional rules that redirect future allocation after a target or payoff is reached.</div>
 <div class="sec">
   <span>Bucket goals</span>
@@ -327,8 +450,6 @@
 
 <div class="sec">Milestones</div>
 <div class="ms-grid" id="milestones"></div>
-<div class="sec">Goal progress</div>
-<div class="balloon-grid" id="goal-balloons"></div>
 </div>
 
 <div class="app-view" data-view="projection">
@@ -357,10 +478,26 @@
   <div>
     <div class="chart-leg" id="chart-leg"></div>
     <div class="chart-toggles">
-      <label><input type="checkbox" id="show-total-assets" checked onchange="update()"> Total assets</label>
-      <label><input type="checkbox" id="show-401k-assets" checked onchange="update()"> 401(k)</label>
-      <label><input type="checkbox" id="show-emergency-assets" checked onchange="update()"> Emergency</label>
-      <label><input type="checkbox" id="show-goal-assets" checked onchange="update()"> Goal buckets</label>
+      <div class="chart-key-stack" style="color:#1D9E75">
+        <label class="chart-toggle-key"><input type="checkbox" id="show-portfolio-assets" checked onchange="update()"><span class="chart-key-swatch chart-key-line"></span> Portfolio</label>
+        <label class="chart-toggle-key chart-key-cone"><input type="checkbox" id="show-portfolio-cone" checked onchange="update()"><span class="chart-key-swatch" style="background:rgba(29,158,117,.14)"></span> range</label>
+      </div>
+      <div class="chart-key-stack" style="color:#534AB7">
+        <label class="chart-toggle-key"><input type="checkbox" id="show-total-assets" checked onchange="update()"><span class="chart-key-swatch chart-key-line"></span> Total assets</label>
+        <label class="chart-toggle-key chart-key-cone"><input type="checkbox" id="show-total-cone" checked onchange="update()"><span class="chart-key-swatch" style="background:rgba(83,74,183,.12)"></span> range</label>
+      </div>
+      <div class="chart-key-stack" style="color:#67A21F">
+        <label class="chart-toggle-key"><input type="checkbox" id="show-401k-assets" checked onchange="update()"><span class="chart-key-swatch chart-key-line"></span> 401(k)</label>
+        <label class="chart-toggle-key chart-key-cone"><input type="checkbox" id="show-401k-cone" checked onchange="update()"><span class="chart-key-swatch" style="background:rgba(103,162,31,.12)"></span> range</label>
+      </div>
+      <div class="chart-key-stack" style="color:#F5A623">
+        <label class="chart-toggle-key"><input type="checkbox" id="show-emergency-assets" checked onchange="update()"><span class="chart-key-swatch chart-key-line"></span> Emergency</label>
+        <label class="chart-toggle-key chart-key-cone"><input type="checkbox" id="show-emergency-cone" checked onchange="update()"><span class="chart-key-swatch" style="background:rgba(245,166,35,.12)"></span> range</label>
+      </div>
+      <div class="chart-key-stack" style="color:#D8A760">
+        <label class="chart-toggle-key"><input type="checkbox" id="show-goal-assets" checked onchange="update()"><span class="chart-key-swatch chart-key-line"></span> Goal buckets</label>
+        <label class="chart-toggle-key chart-key-cone"><input type="checkbox" id="show-goal-cone" checked onchange="update()"><span class="chart-key-swatch" style="background:rgba(216,167,96,.12)"></span> range</label>
+      </div>
     </div>
     <div class="chart-shell" id="chart-shell">
       <canvas id="proj" role="img" aria-label="Projection chart showing debt declining and portfolio growing">Financial projection.</canvas>
@@ -407,6 +544,78 @@
 <div class="ledger-list" id="event-ledger"></div>
 </div>
 
+<div class="app-view" data-view="coaching">
+<div class="sec">Coaching referral</div>
+<div class="coaching-page">
+  <div class="coaching-intro">
+    <div class="coaching-title">Find the right kind of support</div>
+    <div class="coaching-copy">Use this as a gentle intake form for people who may want help turning their plan into real-life next steps. Keep it high level: Buckets does not attach saved plans, statements, or audit rows to this request.</div>
+    <div class="privacy-note">
+      <div class="privacy-title">Referral note</div>
+      <div class="privacy-copy">This is not financial, tax, legal, or investment advice. It simply helps route someone toward the kind of coaching conversation they may want.</div>
+    </div>
+  </div>
+  <form class="coaching-form" name="buckets-coaching-referral" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" onsubmit="submitCoachingForm(event)">
+    <input type="hidden" name="form-name" value="buckets-coaching-referral">
+    <label style="display:none">Do not fill this out
+      <input name="bot-field">
+    </label>
+    <label>Name
+      <input id="coaching-name" name="name" type="text" placeholder="Your name">
+    </label>
+    <label>Email
+      <input id="coaching-email" name="email" type="email" placeholder="name@example.com">
+    </label>
+    <label>What kind of goal are you working toward?
+      <select name="goal_type" required>
+        <option value="">Choose one</option>
+        <option>Monthly budget clarity</option>
+        <option>Debt payoff</option>
+        <option>Savings goal</option>
+        <option>Investing / retirement planning</option>
+        <option>Irregular income planning</option>
+        <option>Business or contractor cash flow</option>
+        <option>Not sure yet</option>
+      </select>
+    </label>
+    <label>Timeline
+      <select name="timeline" required>
+        <option value="">Choose one</option>
+        <option>This month</option>
+        <option>Next 3 months</option>
+        <option>Next year</option>
+        <option>5+ year plan</option>
+        <option>Exploring</option>
+      </select>
+    </label>
+    <label>What would make this feel successful?
+      <textarea name="success" placeholder="Example: I want to feel less scattered, know where my money is going, and make a calm debt payoff plan." required></textarea>
+    </label>
+    <label>What feels confusing or heavy right now?
+      <textarea name="challenge" placeholder="Optional: income swings, debt, taxes, spending patterns, big upcoming events..."></textarea>
+    </label>
+    <div>
+      <div class="bucket-hint" style="margin-bottom:6px">Support you might want</div>
+      <div class="coaching-checks">
+        <label><input type="checkbox" name="support" value="Accountability"> Accountability</label>
+        <label><input type="checkbox" name="support" value="Financial education"> Financial education</label>
+        <label><input type="checkbox" name="support" value="Debt strategy"> Debt strategy</label>
+        <label><input type="checkbox" name="support" value="Budget setup"> Budget setup</label>
+        <label><input type="checkbox" name="support" value="Referral to licensed professional"> Referral to a licensed professional</label>
+      </div>
+    </div>
+    <label>Anything else?
+      <textarea name="notes" placeholder="Optional notes"></textarea>
+    </label>
+    <div class="privacy-copy">Buckets does not attach your saved plan or statements.</div>
+    <div class="coaching-status" id="coaching-status" aria-live="polite"></div>
+    <div class="inline-actions" style="justify-content:flex-end">
+      <button class="small-btn" type="submit">Send coaching request</button>
+    </div>
+  </form>
+</div>
+</div>
+
 <div class="app-view" data-view="audit">
 <div class="sec ledger-head">
 	  <span>Audit</span>
@@ -442,8 +651,16 @@
 	        </div>
 	      </div>
 	      <div class="inline-actions" style="margin-top:12px">
-	        <button class="small-btn" onclick="autoCategorizeAudit()">Auto-categorize</button>
-	        <button class="small-btn" onclick="reviewAllAuditRows()">Review all</button>
+	        <button class="small-btn" id="audit-auto-categorize-btn" onclick="autoCategorizeAudit()">Auto-categorize unreviewed</button>
+	        <button class="small-btn" onclick="reviewGuessedAuditRows()">Set to Review</button>
+	        <button class="small-btn" onclick="clearAuditLearning()">Clear learning</button>
+	      </div>
+	      <div class="audit-privacy-row">
+	        <div class="inline-actions">
+	          <label class="audit-toggle"><input type="checkbox" id="audit-private-mode" onchange="setAuditPrivateMode(this.checked)"> Private audit mode</label>
+	          <label class="audit-toggle"><input type="checkbox" id="audit-learning-enabled" onchange="setAuditLearningEnabled(this.checked)"> Local learning</label>
+	        </div>
+	        <div class="audit-learning-note">Private mode keeps audit rows out of autosave and exported plan files. After correcting a row, click Learn to remember only a cleaned merchant/category hint in this browser.</div>
 	      </div>
 	    </div>
 	  </div>
@@ -549,19 +766,91 @@
     </div>
     <div class="privacy-note">
       <div class="privacy-title">Local calculator mode</div>
-      <div class="privacy-copy">Realm can be used without an account. In this mode, your plan, saved scenarios, statements, and transactions stay in this browser unless you choose to export a file.</div>
+      <div class="privacy-copy">Buckets can be used without an account. In this mode, your plan, saved scenarios, statements, and transactions stay in this browser unless you choose to export a file.</div>
     </div>
     <div class="privacy-note">
       <div class="privacy-title">Statement audit</div>
-      <div class="privacy-copy">When you use the audit tools, PDF statements are read on your device by the browser. Realm uses that information to help you review transactions without sending the statement file to a Realm server.</div>
+      <div class="privacy-copy">When you use the audit tools, PDF statements are read on your device by the browser. Buckets uses that information to help you review transactions without sending the statement file to a Buckets server. Private audit mode keeps itemized audit rows out of autosave and exported plan files.</div>
+    </div>
+    <div class="privacy-note">
+      <div class="privacy-title">Local learning</div>
+      <div class="privacy-copy">Auto-categorize can learn from corrections only when you click Learn on a reviewed audit row. Buckets stores cleaned merchant/category hints in this browser. It does not upload transactions or use a cloud AI service in this local calculator mode, and you can clear the learning from the Audit tab.</div>
     </div>
     <div class="privacy-note">
       <div class="privacy-title">Optional cloud features</div>
-      <div class="privacy-copy">If Realm adds accounts or cloud storage in the future, those features will be optional and clearly labeled before any data is stored outside your device.</div>
+      <div class="privacy-copy">If Buckets adds accounts or cloud storage in the future, those features will be optional and clearly labeled before any data is stored outside your device.</div>
     </div>
     <div class="privacy-note">
       <div class="privacy-title">Planning disclaimer</div>
-      <div class="privacy-copy">Realm is an educational planning calculator, not financial, tax, legal, or investment advice.</div>
+      <div class="privacy-copy">Buckets is an educational planning calculator, not financial, tax, legal, or investment advice.</div>
+    </div>
+    <div class="privacy-note">
+      <div class="privacy-title">Local data controls</div>
+      <div class="privacy-copy">Clear saved plans, saved examples, audit rows, and local learning from this browser. Export anything you want to keep first.</div>
+      <div class="inline-actions" style="justify-content:flex-end;margin-top:10px">
+        <button class="small-btn" onclick="clearAllLocalData()">Clear local data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="feedback-modal-title">Send feedback</div>
+        <div class="bucket-hint">Share what felt clear, confusing, broken, or worth building next.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('feedback-modal')">Close</button>
+    </div>
+    <form class="feedback-form" name="buckets-feedback" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" onsubmit="submitFeedbackForm(event)">
+      <input type="hidden" name="form-name" value="buckets-feedback">
+      <label style="display:none">Do not fill this out
+        <input name="bot-field">
+      </label>
+      <label>Name
+        <input id="feedback-name" name="name" type="text" placeholder="Your name">
+      </label>
+      <label>Feedback notes
+        <textarea id="feedback-notes" name="notes" placeholder="What did you notice while using Buckets?" required></textarea>
+      </label>
+      <div class="privacy-copy">Buckets does not attach your saved plan or statements.</div>
+      <div class="privacy-copy" id="feedback-status" aria-live="polite"></div>
+      <div class="inline-actions" style="justify-content:flex-end">
+        <button class="small-btn" type="submit">Send feedback</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="bucket-help-modal" role="dialog" aria-modal="true" aria-labelledby="bucket-help-title">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="bucket-help-title">How buckets work</div>
+      <button class="modal-close" onclick="closeModal('bucket-help-modal')">Close</button>
+    </div>
+    <div class="bucket-help-copy">Buckets are the places your monthly money is assigned. This is a simple overview; click Details on a bucket for the more specific type options and fields.</div>
+    <div class="bucket-help-list">
+      <div class="bucket-help-card">
+        <div class="bucket-help-title">Spending</div>
+        <div class="bucket-help-copy">Everyday categories like rent, food, insurance, fun, travel, or misc. These usually do not need a balance.</div>
+      </div>
+      <div class="bucket-help-card">
+        <div class="bucket-help-title">Savings and goals</div>
+        <div class="bucket-help-copy">Use for emergency fund, cottage, wedding, or other target balances. Specific types may include Savings goal or Goal bucket.</div>
+      </div>
+      <div class="bucket-help-card">
+        <div class="bucket-help-title">Debt payoff</div>
+        <div class="bucket-help-copy">Monthly money in these buckets is pooled for debt payoff. Debt balances and interest rates live in Your situation or Advanced debt.</div>
+      </div>
+      <div class="bucket-help-card">
+        <div class="bucket-help-title">Investment and retirement</div>
+        <div class="bucket-help-copy">Use for 401(k), retirement, brokerage, HSA, or personal investing. Details can store growth assumptions and employer match when relevant.</div>
+      </div>
+      <div class="bucket-help-card">
+        <div class="bucket-help-title">Wellness</div>
+        <div class="bucket-help-copy">A gentle category for health, self-care, fitness, therapy, or restorative spending. Audit review can celebrate these when selected.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -580,15 +869,15 @@
   <div class="modal">
     <div class="modal-head">
       <div>
-        <div class="modal-title" id="god-modal-title">Give it to God</div>
-        <div class="bucket-hint">Name the request, gratitude, or worry you are placing in open hands.</div>
+        <div class="modal-title" id="god-modal-title">Gratitude</div>
+        <div class="bucket-hint">Name one thing you are thankful for, small or big.</div>
       </div>
       <button class="modal-close" onclick="closeModal('god-modal')">Close</button>
     </div>
     <div class="realm-prayer">
-      <textarea id="god-request" placeholder="I am grateful for... / I am worried about... / I am asking for guidance with..."></textarea>
+      <textarea id="god-request" placeholder="Today I am grateful for..."></textarea>
       <div class="inline-actions" style="justify-content:flex-end;margin-top:10px">
-        <button class="small-btn" onclick="receiveEncouragement()">Receive encouragement</button>
+        <button class="small-btn" onclick="receiveEncouragement()">Reflect</button>
       </div>
       <div class="realm-encouragement" id="god-encouragement"></div>
     </div>
@@ -628,12 +917,16 @@ let auditMonthFilter = '';
 let auditSearchTerm = '';
 let auditSearchCursor = 0;
 let auditAllocationUndo = null;
+let auditPrivateMode = true;
+let auditLearningEnabled = true;
+let auditExcludedAverageMonths = [];
 let focusMonthDate = '';
 
 const PALETTE = ['#C51612','#F5A623','#24A67F','#67A21F','#185C40','#7A4A12','#FFD91A','#5B51C8','#D85282','#59D5E7','#583068','#B8B5FF'];
 let paletteIdx = 0;
 const SAVE_KEY = 'financialPlannerV3State';
 const SCENARIOS_KEY = 'financialPlannerV3Scenarios';
+const AUDIT_LEARNING_KEY = 'realmAuditLearningV1';
 
 function fmt(n){ return '$'+Math.round(n).toLocaleString(); }
 function fmtPct(n){ return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(/\.0$/,''); }
@@ -795,6 +1088,7 @@ function isDebtBucket(b){
 function isAssetBucket(b){
   const type = bucketDetails(b).accountType || '';
   if(['wellness','debt'].includes(type)) return false;
+  if(isBucketGoal(b)) return true;
   const name = (b.name || '').toLowerCase();
   return !name.includes('debt') && !name.includes('living') && !isWellnessBucket(b);
 }
@@ -805,6 +1099,20 @@ function monthlyBucketRate(b,defaultInvestmentRate){
   const supportsGrowth = ['savings','goal','401k','retirement','investment','brokerage','hsa'].includes(type);
   if(supportsGrowth && d.growthRate !== undefined && d.growthRate !== '') return (parseFloat(d.growthRate)||0)/100/12;
   return isInvestmentBucket(b) ? defaultInvestmentRate : 0;
+}
+function bucketSupportsGrowth(b){
+  const type = bucketDetails(b).accountType || '';
+  return ['savings','goal','401k','retirement','investment','brokerage','hsa'].includes(type) || isInvestmentBucket(b);
+}
+function bucketRiskRange(b){
+  const d = bucketDetails(b);
+  if(d.riskRange !== undefined && d.riskRange !== '') return Math.max(0,parseFloat(d.riskRange)||0);
+  const type = d.accountType || '';
+  return ['savings','goal'].includes(type) ? 1 : 3;
+}
+function chartToggleChecked(id,defaultValue=true){
+  const el = document.getElementById(id);
+  return el ? !!el.checked : defaultValue;
 }
 
 function employerMatchForBucket(b,income){
@@ -819,6 +1127,21 @@ function employerMatchForBucket(b,income){
 
 function currentAccountBalance(){
   return buckets.reduce((s,b)=>s+(isInvestmentBucket(b)?(parseFloat(bucketDetails(b).currentBalance)||0):0),0);
+}
+
+function expectedInvestmentAnnualRate(income){
+  const investmentBuckets = buckets.filter(isInvestmentBucket);
+  let weighted = 0, totalWeight = 0;
+  investmentBuckets.forEach(b=>{
+    const d = bucketDetails(b);
+    const rate = parseFloat(d.growthRate);
+    if(!Number.isFinite(rate)) return;
+    const weight = (parseFloat(d.currentBalance)||0) + income*(b.pct||0)/100 + employerMatchForBucket(b,income);
+    const safeWeight = weight > 0 ? weight : 1;
+    weighted += rate * safeWeight;
+    totalWeight += safeWeight;
+  });
+  return totalWeight ? weighted / totalWeight : 7;
 }
 
 function monthlyEmployerMatch(income){
@@ -851,16 +1174,15 @@ function plannerState(){
       income:document.getElementById('f-income')?.value,
       debt:document.getElementById('f-debt')?.value,
       rate:document.getElementById('f-rate')?.value,
-      savings:document.getElementById('f-savings')?.value,
-      iRate:document.getElementById('f-irate')?.value,
       years:projYears,
       chartHeight,
       allocationSize,
       focusMonthDate
     },
-    buckets, goals, bucketGoalIds, debtAccounts, financialEvents, eventDefaultAllocations, auditTransactions,
+    buckets, goals, bucketGoalIds, debtAccounts, financialEvents, eventDefaultAllocations,
+    auditTransactions:auditPrivateMode ? [] : auditTransactions,
     nextBucketId, nextGoalId, nextDebtId, nextEventId, nextAuditId,
-	    useAdvancedDebt, debtRedirectBucketId, eventSortMode, auditSortMode, auditMonthFilter, auditSearchTerm, auditAllocationUndo
+	    useAdvancedDebt, debtRedirectBucketId, eventSortMode, auditSortMode, auditMonthFilter, auditSearchTerm, auditAllocationUndo, auditPrivateMode, auditLearningEnabled, auditExcludedAverageMonths
   };
 }
 
@@ -872,9 +1194,20 @@ function applyPlannerState(state){
   if(f.income!=null) document.getElementById('f-income').value = f.income;
   if(f.debt!=null) document.getElementById('f-debt').value = f.debt;
   if(f.rate!=null) document.getElementById('f-rate').value = f.rate;
-  if(f.savings!=null) document.getElementById('f-savings').value = f.savings;
-  if(f.iRate!=null) document.getElementById('f-irate').value = f.iRate;
   buckets = Array.isArray(state.buckets) ? state.buckets : buckets;
+  if(f.savings!=null){
+    const emergencyBucket = buckets.find(b=>(b.name||'').toLowerCase().includes('emergency'));
+    if(emergencyBucket){
+      emergencyBucket.details = bucketDetails(emergencyBucket);
+      if(!parseFloat(emergencyBucket.details.currentBalance)) emergencyBucket.details.currentBalance = f.savings;
+    }
+  }
+  if(f.iRate!=null){
+    buckets.filter(isInvestmentBucket).forEach(b=>{
+      b.details = bucketDetails(b);
+      if(b.details.growthRate === undefined || b.details.growthRate === '') b.details.growthRate = f.iRate;
+    });
+  }
   goals = Array.isArray(state.goals) ? state.goals : goals;
   goals.forEach(g=>{ if(!g.visual) g.visual = 'balloon'; });
   bucketGoalIds = Array.isArray(state.bucketGoalIds) ? state.bucketGoalIds : [];
@@ -885,7 +1218,6 @@ function applyPlannerState(state){
   if(!Object.keys(eventDefaultAllocations).length) buckets.forEach(b=>eventDefaultAllocations[b.id]=b.pct);
   auditTransactions = Array.isArray(state.auditTransactions) ? state.auditTransactions : auditTransactions;
   ensureAuditTransactionIds();
-  reconcileAuditTransfers();
   nextBucketId = state.nextBucketId || Math.max(0,...buckets.map(b=>b.id||0))+1;
   nextGoalId = state.nextGoalId || Math.max(0,...goals.map(g=>g.id||0))+1;
   nextDebtId = state.nextDebtId || Math.max(0,...debtAccounts.map(d=>d.id||0))+1;
@@ -898,6 +1230,9 @@ function applyPlannerState(state){
   auditMonthFilter = state.auditMonthFilter || '';
   auditSearchTerm = state.auditSearchTerm || '';
   auditAllocationUndo = state.auditAllocationUndo || null;
+  auditPrivateMode = state.auditPrivateMode !== undefined ? !!state.auditPrivateMode : true;
+  auditLearningEnabled = state.auditLearningEnabled !== undefined ? !!state.auditLearningEnabled : true;
+  auditExcludedAverageMonths = Array.isArray(state.auditExcludedAverageMonths) ? state.auditExcludedAverageMonths : [];
   chartHeight = f.chartHeight || chartHeight;
   allocationSize = f.allocationSize || allocationSize;
   projYears = f.years || projYears;
@@ -905,6 +1240,7 @@ function applyPlannerState(state){
   if(focusMonthDate && monthNumberFromInput(focusMonthDate) > projYears*12) focusMonthDate = monthInputForMonth(projYears*12);
   renderYearControls();
   renderBuckets(); renderBucketGoals(); renderGoals(); renderDebtSwitch(); syncDebtRateFieldState();
+  syncAuditPrivacyControls();
   syncChartSize(chartHeight); syncAllocationSize(allocationSize);
   isLoadingState = false;
   update();
@@ -962,15 +1298,38 @@ function clearSavedPlanner(){
   if(el) el.textContent = 'Saved data cleared';
 }
 
+function clearAllLocalData(){
+  const ok = confirm('Clear all local Buckets data from this browser? This removes autosave, saved scenarios, audit rows, and local learning. Export anything you want to keep first.');
+  if(!ok) return;
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem(SCENARIOS_KEY);
+  localStorage.removeItem(AUDIT_LEARNING_KEY);
+  applyPlannerState(blankPlannerState());
+  seedExampleTemplate();
+  refreshScenarioList();
+  closeModal('privacy-modal');
+  const el=document.getElementById('save-status');
+  if(el) el.textContent = 'All local data cleared';
+}
+
 function exportPlannerState(){
   const blob = new Blob([JSON.stringify(plannerState(),null,2)],{type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'financial-planner-scenario.json';
+  a.download = exportFileNameForPlan(document.getElementById('scenario-name')?.value || plannerState().name);
   document.body.appendChild(a);
   a.click();
   URL.revokeObjectURL(a.href);
   a.remove();
+}
+
+function exportFileNameForPlan(name){
+  const safeName = String(name || 'financial-planner-scenario')
+    .trim()
+    .replace(/['"]/g,'')
+    .replace(/[^a-zA-Z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+  return (safeName || 'financial-planner-scenario') + '.json';
 }
 
 function importPlannerState(file){
@@ -1003,7 +1362,7 @@ function blankPlannerState(){
     version:3,
     name:'My plan',
     savedAt:new Date().toISOString(),
-    fields:{income:'',debt:'',rate:'',savings:'',iRate:'',years:10,chartHeight:260,allocationSize:180,focusMonthDate:''},
+    fields:{income:'',debt:'',rate:'',years:10,chartHeight:260,allocationSize:180,focusMonthDate:''},
     buckets:[],
     goals:[],
     bucketGoalIds:[],
@@ -1022,7 +1381,10 @@ function blankPlannerState(){
     auditSortMode:'original',
     auditMonthFilter:'',
     auditSearchTerm:'',
-    auditAllocationUndo:null
+    auditAllocationUndo:null,
+    auditPrivateMode:true,
+    auditLearningEnabled:true,
+    auditExcludedAverageMonths:[]
   };
 }
 
@@ -1032,34 +1394,38 @@ function exampleTemplateState(){
     { id:2, name:'Car insurance', pct:1.6, color:'#5B51C8', fixed:false, details:{accountType:''} },
     { id:3, name:'Food', pct:11.3, color:'#D85282', fixed:false, details:{accountType:''} },
     { id:4, name:'Fun', pct:5.7, color:'#FFD91A', fixed:false, details:{accountType:''} },
-    { id:5, name:'Misc', pct:0, color:'#B8B5FF', fixed:false, details:{accountType:''} },
-    { id:6, name:'Debt payoff', pct:10, color:'#7A4A12', fixed:false, details:{accountType:'debt'} },
+    { id:5, name:'Misc', pct:7, color:'#B8B5FF', fixed:false, details:{accountType:''} },
+    { id:6, name:'Debt payoff', pct:16, color:'#7A4A12', fixed:false, details:{accountType:'debt'} },
     { id:7, name:'Employer 401(k)', pct:6, color:'#67A21F', fixed:false, details:{accountType:'401k', currentBalance:0, growthRate:7, matchRate:0, matchCap:0} },
     { id:8, name:'Personal investment', pct:3.9, color:'#24A67F', fixed:false, details:{accountType:'investment', currentBalance:0, growthRate:7} },
-    { id:9, name:'Emergency fund', pct:1.5, color:'#F5A623', fixed:false, details:{accountType:'savings', currentBalance:0, growthRate:3} },
+    { id:9, name:'Emergency fund', pct:7, color:'#F5A623', fixed:false, details:{accountType:'savings', currentBalance:0, growthRate:3} },
     { id:10, name:'Wellness', pct:7.5, color:'#59D5E7', fixed:false, details:{accountType:'wellness', wellnessCelebration:true} },
+    { id:11, name:'Cottage', pct:10, color:'#D8C3A5', fixed:false, details:{accountType:'goal', currentBalance:5000, targetBalance:200000, growthRate:3, targetDate:monthInputForMonth(96), goalVisual:'castle'} },
   ];
   const allocations = {2:40,3:40,4:20};
   return {
     version:3,
     name:'Example template',
     savedAt:new Date().toISOString(),
-    fields:{income:'4000',debt:'15000',rate:'18',savings:'500',iRate:'7',years:10,chartHeight:260,allocationSize:180,focusMonthDate:''},
+    fields:{income:'11000',debt:'15000',rate:'18',years:15,chartHeight:260,allocationSize:180,focusMonthDate:'2031-03'},
     buckets:exampleBuckets,
-    goals:[],
-    bucketGoalIds:[],
+    goals:[
+      { id:1, type:'savings', label:'Emergency fund filled', target:6000, fromBucket:9, toBucket:6, visual:'balloon', description:'When emergency savings reaches $6,000, move that allocation to debt payoff.' },
+      { id:2, type:'debt', label:'Debt payoff redirects', target:15000, fromBucket:6, toBucket:11, visual:'plant', description:'When debt payoff reaches the target, move that allocation to Cottage.' },
+    ],
+    bucketGoalIds:[11],
     debtAccounts:[
       { id:1, name:'Amex', balance:6000, rate:29, active:true },
       { id:2, name:'Loan', balance:9000, rate:8, active:true },
     ],
     financialEvents:[
-      { id:1, name:'Annual bonus', date:monthInputForMonth(7), type:'income', amount:3000, allocations:{2:40,3:40,4:20} },
-      { id:2, name:'Wedding trip', date:monthInputForMonth(10), type:'expense', amount:1800, allocations:{} },
+      { id:1, name:'Annual bonus', date:'2027-01', type:'income', amount:3000, allocations:{2:40,3:40,4:20}, items:[{id:1,name:'Annual bonus',date:'2027-01',type:'income',amount:3000}], group:'Annual bonus' },
+      { id:2, name:'Wedding trip', date:'2027-04', type:'expense', amount:1800, allocations:{}, items:[{id:1,name:'Wedding trip',date:'2027-04',type:'expense',amount:1800}], group:'Wedding trip' },
     ],
     eventDefaultAllocations:allocations,
     auditTransactions:[],
-    nextBucketId:11,
-    nextGoalId:1,
+    nextBucketId:12,
+    nextGoalId:3,
     nextDebtId:3,
     nextEventId:3,
     nextAuditId:1,
@@ -1069,13 +1435,23 @@ function exampleTemplateState(){
     auditSortMode:'original',
     auditMonthFilter:'',
     auditSearchTerm:'',
-    auditAllocationUndo:null
+    auditAllocationUndo:null,
+    auditPrivateMode:true,
+    auditLearningEnabled:true,
+    auditExcludedAverageMonths:[]
   };
 }
 
 function seedExampleTemplate(){
   const store = getScenarioStore();
-  if(!store['Example template']){
+  const existing = store['Example template'];
+  const hasCottage = Array.isArray(existing?.buckets) && existing.buckets.some(b=>String(b.name||'').toLowerCase()==='cottage');
+  const cottagePct = existing?.buckets?.find(b=>String(b.name||'').toLowerCase()==='cottage')?.pct;
+  const miscPct = existing?.buckets?.find(b=>String(b.name||'').toLowerCase()==='misc')?.pct;
+  const debtPct = existing?.buckets?.find(b=>String(b.name||'').toLowerCase()==='debt payoff')?.pct;
+  const emergencyPct = existing?.buckets?.find(b=>String(b.name||'').toLowerCase()==='emergency fund')?.pct;
+  const debtSwitchTarget = existing?.goals?.find(g=>String(g.label||'').toLowerCase().includes('debt payoff'))?.toBucket;
+  if(!existing || !hasCottage || cottagePct !== 10 || miscPct !== 7 || debtPct !== 16 || emergencyPct !== 7 || debtSwitchTarget !== 11 || (existing.goals||[]).length < 2 || !(existing.bucketGoalIds||[]).includes(11)){
     store['Example template'] = exampleTemplateState();
     setScenarioStore(store);
   }
@@ -1324,8 +1700,8 @@ function renderBucketDetails(){
   const hasMatch = type === '401k';
   const hasWellness = type === 'wellness';
   const growthHint = ['savings','goal'].includes(type)
-    ? 'Use this for HYSA, CDs, money market, or goal-bucket yield.'
-    : 'Use this for long-term expected account growth.';
+    ? 'A planning hypothesis for HYSA, CDs, money market, or goal-bucket yield.'
+    : 'A planning hypothesis for long-term average account growth.';
   const balanceHtml = hasBalance ? `
     <label class="fin-lbl">Current balance
       <div style="position:relative;margin-top:4px"><span class="pfx">$</span><input type="number" min="0" step="1" value="${Math.round(parseFloat(d.currentBalance)||0)}" class="has-pfx" style="width:100%;font-size:13px" oninput="setBucketDetail(${b.id},'currentBalance',this.value)"></div>
@@ -1334,10 +1710,16 @@ function renderBucketDetails(){
       : `<div class="bucket-hint" style="align-self:end">Spending-style buckets use the monthly allocation above, so no balance is needed here.</div>`;
   const growthHtml = hasGrowth ? `
     <div class="account-row">
-      <label class="fin-lbl">Annual growth / yield
+      <label class="fin-lbl">Expected average growth percent
         <div style="position:relative;margin-top:4px"><input type="number" min="0" step="0.1" value="${parseFloat(d.growthRate)||0}" class="has-sfx" style="width:100%;font-size:13px" oninput="setBucketDetail(${b.id},'growthRate',this.value)"><span class="sfx">%</span></div>
       </label>
       <div class="bucket-hint" style="align-self:end">${growthHint}</div>
+    </div>
+    <div class="account-row">
+      <label class="fin-lbl">Forecast range (+/-)
+        <div style="position:relative;margin-top:4px"><input type="number" min="0" step="0.1" value="${bucketRiskRange(b)}" class="has-sfx" style="width:100%;font-size:13px" oninput="setBucketDetail(${b.id},'riskRange',this.value)"><span class="sfx">%</span></div>
+      </label>
+      <div class="bucket-hint" style="align-self:end">Shows the soft projection band around this bucket's expected growth. Smaller for cash-like savings, larger for investments.</div>
     </div>` : '';
   const matchHtml = hasMatch ? `
     <div class="account-row">
@@ -1394,7 +1776,7 @@ function renderDebtSwitch(){
         <div style="font-size:13px;font-weight:500">When debt is paid off</div>
         <div class="goal-phase">Redirect the monthly debt payment starting the month after payoff</div>
       </div>
-      <select onchange="setDebtRedirectBucket(this.value)" style="font-size:13px;width:100%">
+      <select class="bucket-select" onchange="setDebtRedirectBucket(this.value)" style="font-size:13px;width:100%;${bucketSelectStyle(debtRedirectBucketId)}">
         ${bucketOptions(debtRedirectBucketId)}
       </select>
     </div>`;
@@ -1416,34 +1798,100 @@ function openCalcModal(){
 function openPrivacyModal(){
   document.getElementById('privacy-modal').style.display='flex';
 }
+function openFeedbackModal(){
+  document.getElementById('feedback-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('feedback-name')?.focus(),50);
+}
+function openBucketHelpModal(){
+  document.getElementById('bucket-help-modal').style.display='flex';
+}
 function openGodModal(){
   document.getElementById('god-modal').style.display='flex';
   setTimeout(()=>document.getElementById('god-request')?.focus(),50);
+}
+function encodeFormData(data){
+  return new URLSearchParams(data).toString();
+}
+function netlifyFormEndpoint(){
+  return location.protocol === 'file:' ? '/' : (location.pathname || '/');
+}
+async function submitFeedbackForm(event){
+  event.preventDefault();
+  const form = event.target;
+  const status = document.getElementById('feedback-status');
+  const submit = form.querySelector('button[type="submit"]');
+  const data = new FormData(form);
+  data.set('plan', document.getElementById('plan-name')?.value.trim() || 'Untitled plan');
+  data.set('page', location.href);
+  if(status) status.textContent = 'Sending feedback...';
+  if(submit) submit.disabled = true;
+  try{
+    const response = await fetch(netlifyFormEndpoint(), {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:encodeFormData(data)
+    });
+    if(!response.ok) throw new Error('Feedback submit failed');
+    if(status) status.textContent = 'Thank you. Feedback sent.';
+    form.reset();
+  }catch(err){
+    if(status) status.textContent = location.protocol === 'file:'
+      ? 'This form will send after the site is deployed on Netlify.'
+      : 'Could not send feedback yet. If this is the first deploy with the form, redeploy once so Netlify can register it.';
+  }finally{
+    if(submit) submit.disabled = false;
+  }
+}
+async function submitCoachingForm(event){
+  event.preventDefault();
+  const form = event.target;
+  const status = document.getElementById('coaching-status');
+  const submit = form.querySelector('button[type="submit"]');
+  const data = new FormData(form);
+  data.set('plan', document.getElementById('plan-name')?.value.trim() || 'Untitled plan');
+  data.set('page', location.href);
+  if(status) status.textContent = 'Sending request...';
+  if(submit) submit.disabled = true;
+  try{
+    const response = await fetch(netlifyFormEndpoint(), {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:encodeFormData(data)
+    });
+    if(!response.ok) throw new Error('Coaching referral submit failed');
+    if(status) status.textContent = 'Thank you. Coaching request sent.';
+    form.reset();
+  }catch(err){
+    if(status) status.textContent = location.protocol === 'file:'
+      ? 'This form will send after the site is deployed on Netlify.'
+      : 'Could not send the request yet. If this is the first deploy with the form, redeploy once so Netlify can register it.';
+  }finally{
+    if(submit) submit.disabled = false;
+  }
+}
+const GRATITUDE_REFLECTIONS = [
+  {tags:['money','budget','income','debt','save','savings'], note:'Let this good thing remind you that money is a tool for care, steadiness, and choice.'},
+  {tags:['family','friend','love','home','child','kids'], note:'Let this gratitude point you back toward the people and places that make the plan matter.'},
+  {tags:['work','job','career','client','business'], note:'Notice the provision inside the work, not just the pressure around it.'},
+  {tags:['health','body','sleep','walk','gym','wellness'], note:'A cared-for body is part of the plan too. Let this count as progress.'},
+  {tags:['peace','calm','rest','slow','quiet'], note:'Let the quiet be enough for a moment. Not every good thing has to become a task.'},
+  {tags:['hard','stress','worry','anxious','fear'], note:'Even in a hard season, gratitude can be one small place to stand.'},
+  {tags:[''], note:'Name it. Let it land. One noticed good thing can soften the whole day.'}
+];
+function gratitudeForText(text){
+  const lower = String(text||'').toLowerCase();
+  const matches = GRATITUDE_REFLECTIONS.filter(v=>v.tags.some(tag=>tag && lower.includes(tag)));
+  const pool = matches.length ? matches : GRATITUDE_REFLECTIONS;
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 function receiveEncouragement(){
   const input = document.getElementById('god-request');
   const box = document.getElementById('god-encouragement');
   if(!box) return;
   const text = (input?.value || '').trim();
-  const lower = text.toLowerCase();
-  let line = '';
-  if(!text){
-    line = 'You do not have to name everything perfectly before you are allowed to rest. Take one slow breath. You are held even here.';
-  } else if(/grateful|gratitude|thank|thanks|bless/.test(lower)){
-    line = 'Let gratitude become a quiet light in the middle of the day. What is good does not need to be rushed past. Receive it fully.';
-  } else if(/worr|fear|anx|afraid|stress|overwhelm|heavy/.test(lower)){
-    line = "You are not asked to carry tomorrow with today's strength. Offer what is too heavy, take the next faithful step, and let peace have room to meet you.";
-  } else if(/guid|decid|choice|uncertain|waiting|timing|clarity/.test(lower)){
-    line = 'Clarity often arrives gradually. Keep your hands open, keep walking in wisdom, and trust that the next right step can be enough for today.';
-  } else {
-    const lines = [
-      'What you place in open hands is not abandoned. It is allowed to breathe, soften, and be held by a grace larger than your planning.',
-      'May this become lighter as you release it. You can be faithful with your part without demanding perfect control over the whole story.',
-      'There is room for patience here. Tend what is yours, receive what is given, and let goodness meet you one step at a time.'
-    ];
-    line = lines[Math.floor(Math.random()*lines.length)];
-  }
-  box.innerHTML = `<div class="realm-encouragement-title">A word for this moment</div>${line}`;
+  const reflection = gratitudeForText(text);
+  const named = text ? `<strong>${escAttr(text)}</strong>` : '<strong>Something good is here.</strong>';
+  box.innerHTML = `<div class="realm-encouragement-title">Gratitude named</div>${named}<div class="realm-encouragement-title" style="margin-top:10px">Reflection</div>${reflection.note}`;
   box.style.display = 'block';
 }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
@@ -1817,14 +2265,14 @@ function openAssetSummaryModal(){
 
 function eventRedirectResolver(c){
   const redirectPairs = [];
-  if(c?.debtFreeMonth && c.debtRedirectBucketId){
-    const debtBucket = buckets.find(b=>b.name.toLowerCase().includes('debt'));
-    if(debtBucket) redirectPairs.push({from:debtBucket.id,to:c.debtRedirectBucketId,afterMonth:c.debtFreeMonth});
-  }
   (c?.goalTrackers || []).forEach(g=>{
     if(!g.triggeredMonth) return;
-    redirectPairs.push({from:g.fromBucket,to:g.toBucket,afterMonth:g.triggeredMonth});
+    redirectPairs.push({from:g.fromBucket,to:g.resolvedToBucket || g.toBucket,afterMonth:g.triggeredMonth});
   });
+  if(c?.debtFreeMonth && c.debtRedirectBucketId){
+    const debtBucket = buckets.find(b=>b.name.toLowerCase().includes('debt'));
+    if(debtBucket && !redirectPairs.some(pair=>pair.from===debtBucket.id)) redirectPairs.push({from:debtBucket.id,to:c.debtRedirectBucketId,afterMonth:c.debtFreeMonth});
+  }
   return function resolve(id, month){
     let current = parseInt(id);
     const trail = [];
@@ -1955,7 +2403,7 @@ function parseAuditRows(text, source){
     const amount = Math.abs(parseFloat(rawAmount.replace(/[()]/g,''))) * (isParen ? -1 : 1);
     const date = cells.find(cell=>/\d{1,4}[/-]\d{1,2}([/-]\d{1,4})?/.test(cell)) || monthInputForMonth(1);
     const description = cells.filter((_,i)=>i!==amountIndex).join(' ').replace(date,'').trim() || 'Transaction';
-    parsed.push({id:makeAuditId(),date,description,amount,auditType:'bucket',bucketId:'',source:source||'Imported',sourceContext:line,importIndex:auditTransactions.length+parsed.length});
+    parsed.push({id:makeAuditId(),date,description,amount,auditType:'bucket',bucketId:'',source:source||'Imported',statementName:source||'Imported',sourceContext:line,importIndex:auditTransactions.length+parsed.length});
   });
   return parsed;
 }
@@ -1977,6 +2425,7 @@ function normalizeAuditTransaction(row, idx, source){
     bucketId:row.bucketId || '',
     eventId:row.eventId || '',
     source:row.source || row.sourceAccount || source || 'Imported',
+    statementName:row.statementName || row.statement || row.accountName || row.sourceName || source || row.source || 'Imported',
     sourceType,
     sourcePage:row.sourcePage || row.page || '',
     sourceContext,
@@ -2014,14 +2463,87 @@ function displayAuditDescription(row){
   if(isGenericBankDescription(description) && contextDescription && contextDescription.length > description.length) return contextDescription;
   return description || contextDescription || 'Transaction';
 }
+function auditLearningStore(){
+  try{ return JSON.parse(localStorage.getItem(AUDIT_LEARNING_KEY) || '{}') || {}; }
+  catch(e){ return {}; }
+}
+function setAuditLearningStore(store){
+  try{ localStorage.setItem(AUDIT_LEARNING_KEY,JSON.stringify(store || {})); }
+  catch(e){}
+}
+function auditTextForLearning(row){
+  const text = typeof row === 'string' ? row : `${displayAuditDescription(row)} ${row?.sourceContext || ''}`;
+  return String(text||'')
+    .toLowerCase()
+    .replace(/\b\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?\b/g,' ')
+    .replace(/\b\d{4,}\b/g,' ')
+    .replace(/\$?\d+(?:,\d{3})*(?:\.\d{2})?/g,' ')
+    .replace(/[^a-z0-9\s&]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function auditMerchantKey(row){
+  const stop = new Set(['debit','card','purchase','digital','pos','visa','mastercard','transaction','online','payment','pmt','ach','withdrawal','deposit','credit','check','mobile','web','the','and','inc','llc','co','com','www']);
+  const tokens = auditTextForLearning(row).split(' ').filter(token=>token.length > 1 && !stop.has(token));
+  return tokens.slice(0,5).join(' ');
+}
+function auditLearnedSuggestion(row){
+  if(!auditLearningEnabled) return null;
+  const key = auditMerchantKey(row);
+  if(!key) return null;
+  const learned = auditLearningStore()[key];
+  if(!learned) return null;
+  if(learned.auditType === 'bucket' && !buckets.some(b=>String(b.id)===String(learned.bucketId))) return null;
+  if(isAuditEventType(learned.auditType) && !eventLineItems().some(e=>`${e.parentId}:${e.id}`===String(learned.eventId||''))) return null;
+  return learned;
+}
+function isAuditEventType(type){
+  return type === 'event_income' || type === 'event_expense';
+}
+function auditRowIsLearnable(row){
+  if(!row) return false;
+  const type = row.auditType || 'bucket';
+  return (type === 'bucket' && row.bucketId) || type === 'base_income' || type === 'transfer' || type === 'ignore' || (isAuditEventType(type) && row.eventId);
+}
+function auditRowHasLearnedHint(row){
+  const learned = auditLearnedSuggestion(row);
+  if(!learned) return false;
+  const type = row.auditType || 'bucket';
+  if(String(learned.auditType || 'bucket') !== String(type)) return false;
+  if(type === 'bucket') return String(learned.bucketId || '') === String(row.bucketId || '');
+  if(isAuditEventType(type)) return String(learned.eventId || '') === String(row.eventId || '');
+  return true;
+}
+function learnAuditRow(row){
+  if(!auditLearningEnabled || !row) return false;
+  const key = auditMerchantKey(row);
+  if(key.length < 3) return false;
+  const type = row.auditType || 'bucket';
+  if(!auditRowIsLearnable(row)) return false;
+  const store = auditLearningStore();
+  store[key] = {
+    auditType:type,
+    bucketId:type === 'bucket' ? String(row.bucketId || '') : '',
+    eventId:isAuditEventType(type) ? String(row.eventId || '') : '',
+    label:displayAuditDescription(row).slice(0,80),
+    count:(store[key]?.count || 0) + 1,
+    updatedAt:new Date().toISOString()
+  };
+  setAuditLearningStore(store);
+  return true;
+}
 function daysBetweenAuditRows(a,b){
   const da = new Date(a.date), db = new Date(b.date);
   if(isNaN(da) || isNaN(db)) return 999;
   return Math.abs(Math.round((da-db)/86400000));
 }
-function reconcileAuditTransfers(){
+function auditRowIsProtected(row){
+  return !!row?.userEdited || auditRowHasLearnedHint(row);
+}
+function reconcileAuditTransfers(preserveReviewed=false){
   let marked = 0;
   auditTransactions.forEach(row=>{
+    if(preserveReviewed && auditRowIsProtected(row)) return;
     const amount = parseFloat(row.amount)||0;
     if(isCardPaymentDescription(row.description) && amount < 0 && row.auditType !== 'transfer'){
       row.auditType = 'transfer';
@@ -2037,8 +2559,8 @@ function reconcileAuditTransfers(){
       marked++;
     }
   });
-  const bankPayments = auditTransactions.filter(t=>t.sourceType==='bank' && (parseFloat(t.amount)||0)<0 && isCardPaymentDescription(t.description));
-  const cardPayments = auditTransactions.filter(t=>t.sourceType==='credit_card' && (parseFloat(t.amount)||0)<0 && isCardPaymentDescription(t.description));
+  const bankPayments = auditTransactions.filter(t=>(!preserveReviewed || !auditRowIsProtected(t)) && t.sourceType==='bank' && (parseFloat(t.amount)||0)<0 && isCardPaymentDescription(t.description));
+  const cardPayments = auditTransactions.filter(t=>(!preserveReviewed || !auditRowIsProtected(t)) && t.sourceType==='credit_card' && (parseFloat(t.amount)||0)<0 && isCardPaymentDescription(t.description));
   bankPayments.forEach(bank=>{
     const match = cardPayments.find(card=>!card.linkedTransferId && Math.abs(Math.abs(parseFloat(card.amount)||0)-Math.abs(parseFloat(bank.amount)||0))<1 && daysBetweenAuditRows(card,bank)<=5);
     if(!match) return;
@@ -2053,29 +2575,59 @@ function importAuditJSON(text, source){
   const rows = Array.isArray(data) ? data : Array.isArray(data.transactions) ? data.transactions : [];
   if(!rows.length) throw new Error('No transactions found in JSON.');
   auditTransactions = auditTransactions.concat(rows.map((row,idx)=>normalizeAuditTransaction(row,idx,source)));
-  reconcileAuditTransfers();
   const status = document.getElementById('audit-status');
   if(status) status.textContent = `Imported ${rows.length} extracted transactions from ${source}.`;
 }
+const AUDIT_BUCKET_RULES = [
+  {keys:['rent','lease','mortgage','landlord'],bucket:['rent','housing','home','living'],types:['']},
+  {keys:['grocery','trader joe','whole foods','market','restaurant','coffee','cafe','starbucks','doordash','instacart','food'],bucket:['food','grocer','dining']},
+  {keys:['gym','fitness','yoga','pilates','wellness','therapy','therapist','massage','health club','planet fitness','equinox','doctor','dentist','pharmacy'],bucket:['wellness','self care','selfcare','health'],types:['wellness']},
+  {keys:['insurance','ins.','progressive','geico','state farm'],bucket:['insurance','car insurance','auto']},
+  {keys:['gas','shell','exxon','chevron','parking','toll','metro','subway','transit','uber','lyft'],bucket:['transport','car','gas','travel','fun']},
+  {keys:['airbnb','hotel','flight','airline','delta','united','southwest','ticket','event'],bucket:['fun','travel']},
+  {keys:['irs','tax','treasury','estimated tax','state tax'],bucket:['tax','misc']},
+  {keys:['amazon','target','walmart','costco','misc','store'],bucket:['misc','household']},
+  {keys:['amex','discover','citi','chase','capital one','loan','lending','student loan'],bucket:['debt','loan'],types:['debt']},
+  {keys:['fidelity','vanguard','schwab','robinhood','brokerage'],bucket:['investment','brokerage','personal investment'],types:['investment','brokerage']},
+  {keys:['401k','empower','retirement'],bucket:['401','retirement'],types:['401k','retirement']},
+  {keys:['savings','emergency','money market'],bucket:['emergency','savings'],types:['savings','goal']}
+];
+function bucketSearchText(bucket){
+  const d = bucketDetails(bucket);
+  return `${bucket.name || ''} ${d.accountType || ''} ${bucketTypeLabel(bucket)}`.toLowerCase();
+}
+function auditHasPhrase(text, phrase){
+  return text.includes(String(phrase||'').toLowerCase());
+}
+function scoreAuditBucket(row,bucket){
+  const text = auditTextForLearning(row);
+  const bucketText = bucketSearchText(bucket);
+  const name = String(bucket.name||'').toLowerCase().trim();
+  let score = 0;
+  if(name && text.includes(name)) score += Math.min(10, 3 + name.split(/\s+/).length);
+  AUDIT_BUCKET_RULES.forEach(rule=>{
+    const hit = rule.keys.some(key=>auditHasPhrase(text,key));
+    if(!hit) return;
+    if(rule.bucket.some(key=>bucketText.includes(key))) score += 4;
+    if((rule.types||[]).some(type=>String(bucketDetails(bucket).accountType||'') === type)) score += 3;
+  });
+  if(isWellnessBucket(bucket) && /health|wellness|gym|fitness|therapy|doctor|dentist|pharmacy|yoga|pilates/.test(text)) score += 3;
+  if(isDebtBucket(bucket) && /loan|debt|card payment|pmt|amex|discover|citi|capital one|chase/.test(text)) score += 3;
+  if(isInvestmentBucket(bucket) && /fidelity|vanguard|schwab|brokerage|invest|401k|retirement/.test(text)) score += 3;
+  return score;
+}
+function autoBucketForTransaction(row){
+  const learned = auditLearnedSuggestion(row);
+  if(learned?.auditType === 'bucket' && learned.bucketId) return parseInt(learned.bucketId,10);
+  const ranked = buckets
+    .map(bucket=>({bucket,score:scoreAuditBucket(row,bucket)}))
+    .sort((a,b)=>b.score-a.score);
+  if(!ranked.length || ranked[0].score < 4) return '';
+  if(ranked[1] && ranked[0].score - ranked[1].score < 2) return '';
+  return ranked[0].bucket.id;
+}
 function autoBucketForDescription(description){
-  const text = String(description||'').toLowerCase();
-  const matchByName = buckets.find(b=>text.includes(String(b.name||'').toLowerCase()));
-  if(matchByName) return matchByName.id;
-	  const rules = [
-	    {keys:['rent','lease','mortgage'],bucket:['rent','living']},
-	    {keys:['grocery','trader','whole foods','restaurant','coffee','food'],bucket:['food']},
-	    {keys:['gym','fitness','yoga','pilates','wellness','therapy','therapist','massage','health club','planet fitness','equinox'],bucket:['wellness','self care','selfcare','health']},
-	    {keys:['amex','discover','citi','card payment','loan'],bucket:['debt']},
-    {keys:['insurance','ins.'],bucket:['ins']},
-    {keys:['fun','travel','hotel','airbnb','uber','lyft'],bucket:['fun']},
-    {keys:['tax','irs','state tax'],bucket:['tax']}
-  ];
-  const rule = rules.find(r=>r.keys.some(k=>text.includes(k)));
-  if(rule){
-    const b = buckets.find(bucket=>rule.bucket.some(k=>String(bucket.name||'').toLowerCase().includes(k)));
-    if(b) return b.id;
-  }
-  return '';
+  return autoBucketForTransaction({description,sourceContext:description});
 }
 const PDF_MONTHS = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12};
 function auditIsoDate(year,month,day){ return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`; }
@@ -2120,6 +2672,22 @@ function extractTransactionsFromPdfLines(lines,fileName,mode){
   return textAll.includes('trans date') || textAll.includes('payment information')
     ? extractCardPdfTransactions(lines,fileName)
     : extractBankPdfTransactions(lines,fileName);
+}
+function defaultStatementName(fileName,mode){
+  const cleaned = String(fileName||'Statement')
+    .replace(/\.[^.]+$/,'')
+    .replace(/statement|stmt|pdf|20\d{4,6}|[_-]+/ig,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+  if(cleaned) return cleaned;
+  return mode === 'credit_card' ? 'Credit card' : mode === 'bank' ? 'Bank' : 'Statement';
+}
+function askStatementName(file,mode){
+  if(mode !== 'bank' && mode !== 'credit_card') return file.name;
+  const label = mode === 'credit_card' ? 'credit card statement' : 'bank statement';
+  const fallback = defaultStatementName(file.name,mode);
+  const answer = prompt(`Name this ${label} for the audit Source column:`, fallback);
+  return String(answer || fallback).trim() || fallback;
 }
 function extractCardPdfTransactions(lines,fileName){
   const year = inferStatementYear(fileName);
@@ -2219,26 +2787,28 @@ function repairWrappedBankCardPurchases(txns){
   }
   return txns;
 }
-async function importAuditPdf(file, mode){
+async function importAuditPdf(file, mode, statementName){
   const status = document.getElementById('audit-status');
   const label = mode === 'credit_card' ? 'credit card' : mode === 'bank' ? 'bank' : 'statement';
-  if(status) status.textContent = `Reading ${label} PDF: ${file.name}...`;
+  const displayName = statementName || defaultStatementName(file.name,mode);
+  if(status) status.textContent = `Reading ${label} PDF: ${displayName}...`;
   const lines = await extractPdfLines(file);
   const rows = extractTransactionsFromPdfLines(lines,file.name,mode);
   if(!rows.length) throw new Error('No itemized transactions found. Try the local extractor for this statement.');
   rows.forEach((row,idx)=>{
     row.sourceType = mode === 'credit_card' ? 'credit_card' : mode === 'bank' ? 'bank' : row.sourceType;
+    row.statementName = displayName;
     row.importIndex = row.importIndex ?? auditTransactions.length+idx;
   });
   auditTransactions = auditTransactions.concat(rows);
-  reconcileAuditTransfers();
-  if(status) status.textContent = `Imported ${rows.length} ${label} transactions from ${file.name}.`;
+  if(status) status.textContent = `Imported ${rows.length} ${label} transactions from ${displayName}.`;
 }
 function importAuditFiles(files, mode='data'){
   Array.from(files||[]).forEach(async file=>{
     if(/pdf$/i.test(file.name)){
+      const statementName = askStatementName(file,mode);
       try{
-        await importAuditPdf(file, mode);
+        await importAuditPdf(file, mode, statementName);
         renderAuditSummary(lastCalc || compute());
         savePlannerState(false);
       }catch(err){
@@ -2251,7 +2821,6 @@ function importAuditFiles(files, mode='data'){
       try{
         if(/json$/i.test(file.name)) importAuditJSON(reader.result,file.name);
         else auditTransactions = auditTransactions.concat(parseAuditRows(reader.result,file.name));
-        reconcileAuditTransfers();
       }catch(err){
         alert('Could not import '+file.name+': '+err.message);
       }
@@ -2268,9 +2837,32 @@ function setAuditField(id,field,val){
   row[field] = field==='amount' ? parseFloat(val)||0 : field==='bucketId' ? (val?parseInt(val):'') : val;
   if(field === 'auditType'){
     row.bucketId = '';
-    if(val !== 'event_income') row.eventId = '';
+    if(!isAuditEventType(val)) row.eventId = '';
   }
+  row.userEdited = true;
+  row.autoCategorized = false;
   if(field === 'bucketId') maybeCelebrateWellnessBucket(row.bucketId);
+  renderAuditSummary(lastCalc || compute());
+  savePlannerState(false);
+}
+function learnAuditTransaction(id){
+  ensureAuditTransactionIds();
+  const row = auditTransactions.find(t=>String(t.id)===String(id));
+  if(!row) return;
+  if(!auditLearningEnabled){
+    alert('Turn on Local learning first.');
+    return;
+  }
+  if(!auditRowIsLearnable(row)){
+    alert('Choose a useful audit type and bucket or event before teaching this row.');
+    return;
+  }
+  if(!learnAuditRow(row)){
+    alert('This row does not have enough merchant detail to learn from yet.');
+    return;
+  }
+  row.userEdited = true;
+  row.learnedAt = new Date().toISOString();
   renderAuditSummary(lastCalc || compute());
   savePlannerState(false);
 }
@@ -2284,27 +2876,37 @@ function setAuditSortMode(mode){
   renderAuditSummary(lastCalc || compute());
   savePlannerState(false);
 }
-function applyAuditSuggestion(kind,value,bucketId){
+function confirmActionButton(button,label='Applied'){
+  if(!button) return;
+  button.dataset.originalText = button.dataset.originalText || button.textContent;
+  button.textContent = label;
+  button.classList.add('applied');
+  button.disabled = true;
+}
+function applyAuditSuggestion(kind,value,bucketId,button){
+  confirmActionButton(button);
   if(kind === 'income'){
     const el = document.getElementById('f-income');
     if(el) el.value = Math.round(value);
   }
   if(kind === 'savings'){
-    const el = document.getElementById('f-savings');
-    if(el) el.value = Math.round(value);
+    const emergencyBucket = buckets.find(b=>(b.name||'').toLowerCase().includes('emergency'));
+    if(emergencyBucket) setBucketDetail(emergencyBucket.id,'currentBalance',Math.round(value));
   }
   if(kind === 'debtPayment' && bucketId){
-    setBucketDollar(bucketId,value);
+    setTimeout(()=>setBucketDollar(bucketId,value),420);
     return;
   }
-  update();
+  setTimeout(()=>update(),420);
 }
-function actualBucketTotalsFromVisibleAudit(){
+function actualBucketTotalsFromVisibleAudit(rows=filteredAuditTransactions()){
   const totals = {};
-  filteredAuditTransactions().forEach(t=>{
+  rows.forEach(t=>{
     if((t.auditType||'bucket') !== 'bucket' || !t.bucketId) return;
     totals[t.bucketId] = (totals[t.bucketId]||0) + Math.abs(parseFloat(t.amount)||0);
   });
+  const divisor = auditMonthlyAverageDivisor(rows);
+  Object.keys(totals).forEach(id=>totals[id] = totals[id] / divisor);
   return totals;
 }
 function applyActualBucketPercentages(){
@@ -2314,6 +2916,11 @@ function applyActualBucketPercentages(){
     alert('Categorize at least one visible audit row into a bucket first.');
     return;
   }
+  const selectedIds = Array.from(document.querySelectorAll('.actual-bucket-check:checked')).map(el=>parseInt(el.value,10)).filter(Boolean);
+  if(!selectedIds.length){
+    alert('Check at least one bucket to update.');
+    return;
+  }
   auditAllocationUndo = {
     savedAt:new Date().toISOString(),
     filter:auditMonthLabelFromKey(auditMonthFilter),
@@ -2321,6 +2928,7 @@ function applyActualBucketPercentages(){
     pcts:buckets.map(b=>({id:b.id,pct:b.pct}))
   };
   buckets.forEach(b=>{
+    if(!selectedIds.includes(b.id)) return;
     b.pct = Math.round(((totals[b.id]||0) / total * 100) * 10) / 10;
   });
   renderBuckets();
@@ -2346,13 +2954,67 @@ function restorePreviousBucketPercentages(){
   savePlannerState(false);
 }
 function autoCategorizeAudit(){
+  if(!auditLearningEnabled){
+    alert('Turn on Local learning to use Auto-categorize.');
+    return;
+  }
+  let updated = 0;
+  let skipped = 0;
   auditTransactions.forEach(row=>{
+    if(auditRowIsProtected(row)){
+      skipped++;
+      return;
+    }
+    const learned = auditLearnedSuggestion(row);
+    if(learned){
+      row.auditType = learned.auditType || 'bucket';
+      row.bucketId = learned.auditType === 'bucket' ? parseInt(learned.bucketId,10) || '' : '';
+      row.eventId = isAuditEventType(learned.auditType) ? learned.eventId || '' : '';
+      row.autoCategorized = true;
+      updated++;
+      return;
+    }
     const amount = parseFloat(row.amount)||0;
     row.auditType = defaultAuditTypeForTransaction(row.description,amount,row.sourceType||'');
     row.eventId = '';
-    row.bucketId = row.auditType === 'bucket' ? autoBucketForDescription(row.description) : '';
+    row.bucketId = row.auditType === 'bucket' ? autoBucketForTransaction(row) : '';
+    row.autoCategorized = true;
+    updated++;
   });
-  reconcileAuditTransfers();
+  reconcileAuditTransfers(true);
+  renderAuditSummary(lastCalc || compute());
+  const status = document.getElementById('audit-status');
+  if(status) status.textContent = `Auto-categorized ${updated} unreviewed row${updated===1?'':'s'} and kept ${skipped} edited/learned row${skipped===1?'':'s'} unchanged.`;
+  savePlannerState(false);
+}
+
+function syncAuditPrivacyControls(){
+  const privateEl = document.getElementById('audit-private-mode');
+  const learningEl = document.getElementById('audit-learning-enabled');
+  const autoBtn = document.getElementById('audit-auto-categorize-btn');
+  if(privateEl) privateEl.checked = !!auditPrivateMode;
+  if(learningEl) learningEl.checked = !!auditLearningEnabled;
+  if(autoBtn) autoBtn.style.display = auditLearningEnabled ? '' : 'none';
+}
+
+function setAuditPrivateMode(value){
+  auditPrivateMode = !!value;
+  syncAuditPrivacyControls();
+  renderAuditSummary(lastCalc || compute());
+  savePlannerState(false);
+}
+
+function setAuditLearningEnabled(value){
+  auditLearningEnabled = !!value;
+  syncAuditPrivacyControls();
+  renderAuditSummary(lastCalc || compute());
+  savePlannerState(false);
+}
+
+function clearAuditLearning(){
+  localStorage.removeItem(AUDIT_LEARNING_KEY);
+  const status = document.getElementById('audit-status');
+  if(status) status.textContent = 'Local categorization learning cleared.';
   renderAuditSummary(lastCalc || compute());
   savePlannerState(false);
 }
@@ -2363,13 +3025,33 @@ function recheckAuditTransfers(){
   savePlannerState(false);
 }
 
+function resetAuditRowToReview(row){
+  row.auditType = 'bucket';
+  row.bucketId = '';
+  row.eventId = '';
+  row.linkedTransferId = '';
+  row.transferNote = '';
+  row.autoCategorized = false;
+}
+
+function reviewGuessedAuditRows(){
+  let resetCount = 0;
+  auditTransactions.forEach(row=>{
+    if(!row.autoCategorized || auditRowIsProtected(row)) return;
+    resetAuditRowToReview(row);
+    resetCount++;
+  });
+  renderAuditSummary(lastCalc || compute());
+  const status = document.getElementById('audit-status');
+  if(status) status.textContent = `Moved ${resetCount} auto-categorized guess${resetCount===1?'':'es'} back to Review. Edited and learned rows were kept.`;
+  savePlannerState(false);
+}
+
 function reviewAllAuditRows(){
   auditTransactions.forEach(row=>{
-    row.auditType = 'bucket';
-    row.bucketId = '';
-    row.eventId = '';
-    row.linkedTransferId = '';
-    row.transferNote = '';
+    resetAuditRowToReview(row);
+    row.userEdited = false;
+    row.learnedAt = '';
   });
   renderAuditSummary(lastCalc || compute());
   savePlannerState(false);
@@ -2428,19 +3110,63 @@ function auditAvailableMonths(){
     .sort((a,b)=>a.localeCompare(b))
     .map(key=>({key,label:auditMonthLabelFromKey(key)}));
 }
+function auditAverageMonthsFromRows(rows){
+  return [...new Set(rows.map(auditMonthKey))]
+    .filter(key=>key && key !== 'Unscheduled')
+    .sort((a,b)=>a.localeCompare(b));
+}
+function auditMonthlyAverageDivisor(rows){
+  if(auditMonthFilter) return 1;
+  return Math.max(1,auditAverageMonthsFromRows(rows).length);
+}
+function auditMonthIncludedInAverage(key){
+  return !auditExcludedAverageMonths.includes(key);
+}
+function setAuditAverageMonthIncluded(key,included){
+  if(!key) return;
+  auditMonthFilter = '';
+  auditExcludedAverageMonths = auditExcludedAverageMonths.filter(item=>item!==key);
+  if(!included) auditExcludedAverageMonths.push(key);
+  renderAuditSummary(lastCalc || compute());
+  savePlannerState(false);
+}
+function setAllAuditMonthsIncluded(included){
+  auditMonthFilter = '';
+  auditExcludedAverageMonths = included ? [] : auditAvailableMonths().map(m=>m.key);
+  renderAuditSummary(lastCalc || compute());
+  savePlannerState(false);
+}
+function auditMonthChecklist(){
+  const months = auditAvailableMonths();
+  if(months.length <= 1) return '';
+  const includedCount = months.filter(m=>auditMonthIncludedInAverage(m.key)).length;
+  const label = includedCount === months.length
+    ? 'All months'
+    : includedCount === 0
+      ? 'No months'
+      : `${includedCount} of ${months.length} months`;
+  return `<details class="audit-month-dropdown">
+    <summary>${label}</summary>
+    <div class="audit-month-menu">
+      <label class="audit-toggle"><input type="checkbox" ${includedCount===months.length?'checked':''} onchange="setAllAuditMonthsIncluded(this.checked)"> Select all</label>
+      ${months.map(m=>`<label class="audit-toggle"><input type="checkbox" ${auditMonthIncludedInAverage(m.key)?'checked':''} onchange="setAuditAverageMonthIncluded('${escAttr(m.key)}',this.checked)"> ${escAttr(m.label)}</label>`).join('')}
+    </div>
+  </details>`;
+}
 function auditRowMatchesSearch(row){
   const term = String(auditSearchTerm||'').trim().toLowerCase();
   if(!term) return true;
   const bucketName = buckets.find(b=>String(b.id)===String(row.bucketId))?.name || '';
   const eventName = eventLineItems().find(e=>`${e.parentId}:${e.id}`===String(row.eventId||''))?.name || '';
   return [
-    row.date,row.description,row.source,row.sourceType,row.sourceContext,row.amount,row.auditType,
+    row.date,row.description,row.source,row.statementName,row.sourceType,row.sourceContext,row.amount,row.auditType,
     bucketName,eventName
   ].some(value=>String(value||'').toLowerCase().includes(term));
 }
 function filteredAuditTransactions(){
   return auditTransactions.filter(row=>
     (!auditMonthFilter || auditMonthKey(row)===auditMonthFilter) &&
+    (auditMonthFilter || auditMonthIncludedInAverage(auditMonthKey(row))) &&
     auditRowMatchesSearch(row)
   );
 }
@@ -2474,7 +3200,7 @@ function sortedAuditTransactions(){
   }else if(auditSortMode === 'amount'){
     rows.sort((a,b)=>Math.abs(parseFloat(b.amount)||0)-Math.abs(parseFloat(a.amount)||0) || auditDateValue(a)-auditDateValue(b));
   }else if(auditSortMode === 'source'){
-    rows.sort((a,b)=>String(a.sourceType||'').localeCompare(String(b.sourceType||'')) || String(a.source||'').localeCompare(String(b.source||'')) || auditDateValue(a)-auditDateValue(b));
+    rows.sort((a,b)=>String(a.sourceType||'').localeCompare(String(b.sourceType||'')) || String(a.statementName||a.source||'').localeCompare(String(b.statementName||b.source||'')) || String(a.source||'').localeCompare(String(b.source||'')) || auditDateValue(a)-auditDateValue(b));
   }else{
     rows.sort((a,b)=>(a.importIndex??0)-(b.importIndex??0));
   }
@@ -2499,30 +3225,76 @@ function setAuditSearch(value,cursor){
 function selectedAttr(actual, expected){
   return String(actual ?? '') === String(expected ?? '') ? ' selected' : '';
 }
+function normalizeHexColor(color){
+  const value = String(color || '').trim();
+  if(/^#[0-9a-f]{6}$/i.test(value)) return value;
+  if(/^#[0-9a-f]{3}$/i.test(value)) return '#'+value.slice(1).split('').map(ch=>ch+ch).join('');
+  return '#9AAE8F';
+}
+function hexToRgb(color){
+  const hex = normalizeHexColor(color).slice(1);
+  return {
+    r:parseInt(hex.slice(0,2),16),
+    g:parseInt(hex.slice(2,4),16),
+    b:parseInt(hex.slice(4,6),16)
+  };
+}
+function bucketTint(color,alpha=.16){
+  const rgb = hexToRgb(color);
+  return `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
+}
+function bucketOptionStyle(bucket){
+  if(!bucket) return '';
+  return ` style="background:${bucketTint(bucket.color,.18)};color:#253229"`;
+}
+function bucketSelectStyle(selectedId){
+  const bucket = buckets.find(b=>String(b.id)===String(selectedId));
+  if(!bucket) return '';
+  const color = normalizeHexColor(bucket.color);
+  return `background:linear-gradient(90deg,${bucketTint(color,.2)},rgba(255,253,248,.92));border-color:${bucketTint(color,.44)};box-shadow:inset 4px 0 0 ${color},0 4px 14px rgba(54,64,45,.04);`;
+}
+function incomeRainbowStyle(){
+  return 'background:linear-gradient(90deg,rgba(197,22,18,.14),rgba(245,166,35,.14),rgba(36,166,127,.14),rgba(89,213,231,.14),rgba(216,82,130,.14));border-color:rgba(36,166,127,.28);box-shadow:inset 4px 0 0 #24A67F,0 4px 14px rgba(54,64,45,.04);';
+}
+function auditTypeSelectStyle(type){
+  return ['base_income','event_income'].includes(type) ? incomeRainbowStyle() : '';
+}
+function auditTypeOptionStyle(value){
+  if(value === 'base_income' || value === 'event_income') return ' style="background:linear-gradient(90deg,#FBE7E7,#FEF1D8,#E4F4ED,#E8F9FC,#F8E3EC);color:#253229"';
+  return '';
+}
 function auditBucketOptions(selected){
   return '<option value=""'+selectedAttr(selected,'')+'>Review</option>' +
-    buckets.map(b=>`<option value="${b.id}"${selectedAttr(selected,b.id)}>${escAttr(b.name)}</option>`).join('');
+    buckets.map(b=>`<option value="${b.id}"${selectedAttr(selected,b.id)}${bucketOptionStyle(b)}>${escAttr(b.name)}</option>`).join('');
 }
-function auditEventOptions(selected){
-  const lines = eventLineItems().sort((a,b)=>lineMonthNumber(a)-lineMonthNumber(b) || String(a.group||'').localeCompare(String(b.group||'')));
+function auditEventOptions(selected,type){
+  const eventKind = type === 'event_expense' ? 'expense' : type === 'event_income' ? 'income' : '';
+  const lines = eventLineItems()
+    .filter(e=>!eventKind || e.type === eventKind)
+    .sort((a,b)=>lineMonthNumber(a)-lineMonthNumber(b) || String(a.group||'').localeCompare(String(b.group||'')));
   return '<option value=""'+selectedAttr(selected,'')+'>Choose event</option>' +
     lines.map(e=>{
       const value = `${e.parentId}:${e.id}`;
       const kind = e.type === 'expense' ? 'Expense' : 'Income';
-      return `<option value="${escAttr(value)}"${selectedAttr(selected,value)}>${escAttr(`${e.group}: ${e.name} (${kind}, ${lineMonthLabel(e)}, ${fmt(parseFloat(e.amount)||0)})`)}</option>`;
+      const style = e.type === 'income'
+        ? ' style="background:linear-gradient(90deg,#FBE7E7,#FEF1D8,#E4F4ED,#E8F9FC,#F8E3EC);color:#253229"'
+        : '';
+      return `<option value="${escAttr(value)}"${selectedAttr(selected,value)}${style}>${escAttr(`${e.group}: ${e.name} (${kind}, ${lineMonthLabel(e)}, ${fmt(parseFloat(e.amount)||0)})`)}</option>`;
     }).join('');
 }
 function auditTypeOptions(selected){
   return [
     ['bucket','Plan bucket'],
     ['base_income','Base salary'],
-    ['event_income','Financial event'],
+    ['event_income','Income event'],
+    ['event_expense','Cost event'],
     ['transfer','Transfer'],
     ['ignore','Ignore']
-  ].map(([value,label])=>`<option value="${value}"${selectedAttr(selected,value)}>${label}</option>`).join('');
+  ].map(([value,label])=>`<option value="${value}"${selectedAttr(selected,value)}${auditTypeOptionStyle(value)}>${label}</option>`).join('');
 }
 function renderAuditSummary(c){
   ensureAuditTransactionIds();
+  syncAuditPrivacyControls();
   const status = document.getElementById('audit-status');
   const summary = document.getElementById('audit-summary');
   const wrap = document.getElementById('audit-table-wrap');
@@ -2531,11 +3303,8 @@ function renderAuditSummary(c){
 	  const income = parseFloat(document.getElementById('f-income').value)||0;
   const visibleAuditRows = filteredAuditTransactions();
 	  const spendRows = visibleAuditRows.filter(t=>(t.auditType||'bucket')==='bucket' && t.bucketId);
-  const actualByBucket = {};
-  spendRows.forEach(t=>{
-    if(!t.bucketId) return;
-    actualByBucket[t.bucketId] = (actualByBucket[t.bucketId]||0) + Math.abs(parseFloat(t.amount)||0);
-  });
+  const actualByBucket = actualBucketTotalsFromVisibleAudit(visibleAuditRows);
+  const auditMonthDivisor = auditMonthlyAverageDivisor(visibleAuditRows);
   const allocatedPct = getTotal();
 	  const plannedTotal = buckets.reduce((s,b)=>s+income*(b.pct||0)/100,0);
 	  const actualTotal = Object.values(actualByBucket).reduce((s,v)=>s+v,0);
@@ -2544,18 +3313,37 @@ function renderAuditSummary(c){
   const wellnessRows = spendRows.filter(t=>wellnessCelebrationBuckets().some(b=>String(b.id)===String(t.bucketId))).length;
   const duplicateGroups = auditDuplicateGroups().map(group=>group.filter(t=>visibleAuditRows.some(row=>String(row.id)===String(t.id)))).filter(group=>group.length>1);
   const duplicateRows = duplicateGroups.reduce((s,g)=>s+g.length,0);
-  const filterLabel = `${auditMonthLabelFromKey(auditMonthFilter)}${auditSearchTerm?` · Search: "${auditSearchTerm}"`:''}`;
-  status.textContent = auditTransactions.length ? `${visibleAuditRows.length} of ${auditTransactions.length} audit rows shown (${filterLabel}). Planned bucket flow uses income ${fmt(income)} x allocated ${fmtPct(allocatedPct)}%.` : 'No audit transactions loaded.';
+  const allAuditMonths = auditAvailableMonths();
+  const selectedAuditMonths = allAuditMonths.filter(m=>auditMonthIncludedInAverage(m.key));
+  const monthFilterLabel = auditMonthFilter
+    ? auditMonthLabelFromKey(auditMonthFilter)
+    : allAuditMonths.length > 1 && selectedAuditMonths.length !== allAuditMonths.length
+      ? `${selectedAuditMonths.length} of ${allAuditMonths.length} months selected`
+      : 'All selected months';
+  const filterLabel = `${monthFilterLabel}${auditSearchTerm?` · Search: "${auditSearchTerm}"`:''}`;
+  const privateText = auditPrivateMode ? 'Private mode on: audit rows are not included in autosave or exports.' : 'Private mode off: audit rows are included in autosave and exports.';
+  const learningCount = Object.keys(auditLearningStore()).length;
+  const learningText = auditLearningEnabled ? `Local learning on (${learningCount} saved hint${learningCount===1?'':'s'}).` : 'Local learning off.';
+  const editedCount = visibleAuditRows.filter(t=>t.userEdited && !auditRowHasLearnedHint(t)).length;
+  const learnedVisibleCount = visibleAuditRows.filter(auditRowHasLearnedHint).length;
+  const reviewStateText = auditTransactions.length ? ` ${editedCount} edited, ${learnedVisibleCount} learned.` : '';
+  status.textContent = auditTransactions.length ? `${visibleAuditRows.length} of ${auditTransactions.length} audit rows shown (${filterLabel}).${reviewStateText} Planned bucket flow uses income ${fmt(income)} x allocated ${fmtPct(allocatedPct)}%. ${privateText} ${learningText}` : `No audit transactions loaded. ${privateText} ${learningText}`;
   summary.innerHTML = [
     {lbl:`Planned bucket flow (${fmtPct(allocatedPct)}%)`,val:fmt(plannedTotal)},
-    {lbl:'Actual categorized flow',val:fmt(actualTotal)},
+    {lbl:auditMonthDivisor>1?'Actual categorized /mo':'Actual categorized flow',val:fmt(actualTotal)},
     {lbl:'Uncategorized',val:String(uncategorized)},
     {lbl:'Transfers',val:String(transferRows)},
     {lbl:'Possible repeats',val:String(duplicateRows)}
   ].map(x=>`<div class="ms-card"><div class="ms-lbl">${x.lbl}</div><div class="ms-val">${x.val}</div></div>`).join('');
   if(suggestionsEl){
-    const likelyIncome = visibleAuditRows.filter(t=>(t.auditType||'')==='base_income').reduce((s,t)=>s+(parseFloat(t.amount)||0),0);
-    const matchedEvents = visibleAuditRows.filter(t=>(t.auditType||'')==='event_income' && t.eventId).reduce((s,t)=>s+Math.abs(parseFloat(t.amount)||0),0);
+    const likelyIncomeRows = visibleAuditRows.filter(t=>(t.auditType||'')==='base_income');
+    const likelyIncomeTotal = likelyIncomeRows.reduce((s,t)=>s+(parseFloat(t.amount)||0),0);
+    const incomeMonthCount = auditMonthFilter ? 1 : Math.max(1,auditAverageMonthsFromRows(visibleAuditRows).length);
+    const likelyMonthlyIncome = likelyIncomeTotal / incomeMonthCount;
+    const likelyIncomeScope = auditMonthFilter
+      ? auditMonthLabelFromKey(auditMonthFilter)
+      : `${incomeMonthCount} selected month${incomeMonthCount===1?'':'s'} averaged`;
+    const matchedEvents = visibleAuditRows.filter(t=>isAuditEventType(t.auditType||'') && t.eventId).reduce((s,t)=>s+Math.abs(parseFloat(t.amount)||0),0);
     const savingsCredits = visibleAuditRows.filter(t=>(parseFloat(t.amount)||0)>0 && (t.auditType||'')!=='transfer' && /savings|performance savings/i.test(`${t.source||''} ${t.description||''}`)).reduce((s,t)=>s+(parseFloat(t.amount)||0),0);
     const debtBucketsForAudit = buckets.filter(isDebtBucket);
     const debtActual = debtBucketsForAudit.reduce((s,b)=>s+(actualByBucket[b.id]||0),0);
@@ -2563,12 +3351,12 @@ function renderAuditSummary(c){
     const debtBucket = debtBucketsForAudit[0] || buckets.find(b=>String(b.name||'').toLowerCase().includes('debt'));
     const cards = [];
     const linkedTransfers = visibleAuditRows.filter(t=>t.linkedTransferId).length;
-    if(likelyIncome>0) cards.push({title:'Detected income',copy:`Rows currently marked Base salary total ${fmt(likelyIncome)}. This refreshes as you reclassify the audit review.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('income',${Math.round(likelyIncome)})">Use as income</button>`});
+    if(likelyIncomeTotal>0 && likelyMonthlyIncome>0) cards.push({title:'Detected monthly income',copy:`Rows marked Base salary suggest ${fmt(likelyMonthlyIncome)}/mo for ${likelyIncomeScope}. This refreshes as you reclassify the audit review.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('income',${Math.round(likelyMonthlyIncome)},null,this)">Use as monthly income</button>`});
     if(transferRows>0) cards.push({title:'Internal transfers filtered',copy:`${transferRows} card payments or internal transfers are kept out of spending totals${linkedTransfers?`, including ${linkedTransfers} matched bank/card rows`:''}.`,action:`<button class="small-btn" onclick="recheckAuditTransfers()">Re-check transfers</button>`});
     if(duplicateRows>0) cards.push({title:'Possible repeat rows',copy:`${duplicateRows} rows share the same date and amount. Sort chronologically to compare them side by side.`,action:`<button class="small-btn" onclick="setAuditSortMode('chrono')">Sort by date</button>`});
     if(matchedEvents>0) cards.push({title:'Financial events matched',copy:`You matched ${fmt(matchedEvents)} of statement rows to planned financial events.`,action:`<button class="small-btn" onclick="setView('events')">Review events</button>`});
-    if(savingsCredits>0) cards.push({title:'Possible savings inflow',copy:`Savings-side credits total ${fmt(savingsCredits)}. You may want to double-check emergency savings.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('savings',${Math.round(savingsCredits)})">Use as emergency savings</button>`});
-    if(debtBucket && debtActual>0 && Math.abs(debtActual-debtPlanned)>25) cards.push({title:'Debt payment reality check',copy:`Debt payments look like ${fmt(debtActual)} vs planned ${fmt(debtPlanned)} for this month.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('debtPayment',${Math.round(debtActual)},${debtBucket.id})">Use actual debt payment</button>`});
+    if(savingsCredits>0) cards.push({title:'Possible savings inflow',copy:`Savings-side credits total ${fmt(savingsCredits)}. You may want to double-check emergency savings.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('savings',${Math.round(savingsCredits)},null,this)">Use as emergency savings</button>`});
+    if(debtBucket && debtActual>0 && Math.abs(debtActual-debtPlanned)>25) cards.push({title:'Debt payment reality check',copy:`Debt payments look like ${fmt(debtActual)} vs planned ${fmt(debtPlanned)} for this month.`,action:`<button class="small-btn" onclick="applyAuditSuggestion('debtPayment',${Math.round(debtActual)},${debtBucket.id},this)">Use actual debt payment</button>`});
     suggestionsEl.innerHTML = cards.length ? `<div class="audit-panel"><div class="ledger-title" style="margin-bottom:8px">Review suggestions</div><div class="ledger-list">${cards.map(card=>`
       <div class="ledger-card">
         <div class="ledger-top"><div><div class="ledger-title">${card.title}</div><div class="audit-status">${card.copy}</div></div><div>${card.action}</div></div>
@@ -2576,27 +3364,47 @@ function renderAuditSummary(c){
   }
   const availableAuditMonths = auditAvailableMonths();
   if(auditMonthFilter && !availableAuditMonths.some(m=>m.key===auditMonthFilter)) auditMonthFilter = '';
-  const monthOptions = '<option value="">All months</option>' + availableAuditMonths.map(m=>`<option value="${escAttr(m.key)}"${selectedAttr(auditMonthFilter,m.key)}>${escAttr(m.label)}</option>`).join('');
   const compareRows = buckets.map(b=>{
     const planned = income*(b.pct||0)/100;
     const actual = actualByBucket[b.id]||0;
     const delta = actual - planned;
     const actualPct = actualTotal > 0 ? actual / actualTotal * 100 : 0;
-    return `<tr><td>${b.name}</td><td>${fmt(planned)} <span class="bucket-hint">(${fmtPct(b.pct||0)}%)</span></td><td>${fmt(actual)} <span class="bucket-hint">(${fmtPct(actualPct)}%)</span></td><td style="color:${delta>0?'#D85A30':'var(--color-text-success)'}">${delta>=0?'+':''}${fmt(delta)}</td></tr>`;
+    const checked = actual > 0 ? ' checked' : '';
+    return `<tr><td>${b.name}</td><td>${fmt(planned)} <span class="bucket-hint">(${fmtPct(b.pct||0)}%)</span></td><td>${fmt(actual)} <span class="bucket-hint">(${fmtPct(actualPct)}%)</span></td><td style="color:${delta>0?'#D85A30':'var(--color-text-success)'}">${delta>=0?'+':''}${fmt(delta)}</td><td><input class="actual-bucket-check" type="checkbox" value="${b.id}"${checked} aria-label="Use actual percentage for ${escAttr(b.name)}"></td></tr>`;
   }).join('');
   let lastAuditMonth = '';
   const txRows = sortedAuditTransactions().slice(0,120).map(t=>{
     const visibleDescription = displayAuditDescription(t);
     const safeDesc = escAttr(visibleDescription);
     const safeContext = String(t.sourceContext||t.description||'').replace(/[<>&]/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]));
+    const statementLabel = String(t.statementName || t.source || 'Imported');
     const safeSource = String(t.source||'Imported').replace(/[<>&]/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]));
+    const safeStatement = statementLabel.replace(/[<>&]/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]));
+    const safeStatementTitle = escAttr(statementLabel);
     const sourceLabel = t.sourceType==='credit_card'?'Credit':t.sourceType==='bank'?'Bank':'Import';
     const duplicateNote = duplicateNoteForRow(t, duplicateGroups);
     const type = t.auditType || 'bucket';
-    const targetControl = type === 'event_income'
-      ? `<select onchange="setAuditField('${t.id}','eventId',this.value)">${auditEventOptions(t.eventId||'')}</select>`
+    const learned = auditRowHasLearnedHint(t);
+    const learnable = auditLearningEnabled && auditRowIsLearnable(t) && !learned;
+    const learnTitle = !auditLearningEnabled
+      ? 'Turn on Local learning to save this pattern.'
+      : learned
+        ? 'This pattern is already learned.'
+        : auditRowIsLearnable(t)
+          ? 'Teach Auto-categorize to use this choice for similar rows.'
+          : 'Choose a bucket, event, or final audit type before learning.';
+    const learnControl = learned
+      ? ''
+      : `<button class="small-btn" onclick="learnAuditTransaction('${t.id}')" ${learnable?'':'disabled'} title="${escAttr(learnTitle)}">Learn</button>`;
+    const reviewPill = learned
+      ? `<span class="audit-learned-pill">Learned</span>`
+      : t.userEdited
+        ? `<span class="audit-edited-pill">Edited</span>`
+        : '';
+    const targetControl = isAuditEventType(type)
+      ? `<select class="${type === 'event_income' ? 'income-select' : ''}" onchange="setAuditField('${t.id}','eventId',this.value)" style="${type === 'event_income' ? incomeRainbowStyle() : ''}">${auditEventOptions(t.eventId||'',type)}</select>`
       : type === 'bucket'
-        ? `<select onchange="setAuditField('${t.id}','bucketId',this.value)">${auditBucketOptions(t.bucketId||'')}</select>`
+        ? `<select class="bucket-select" onchange="setAuditField('${t.id}','bucketId',this.value)" style="${bucketSelectStyle(t.bucketId||'')}">${auditBucketOptions(t.bucketId||'')}</select>`
         : `<span class="bucket-type-pill" title="${escAttr(t.transferNote||'')}">${type==='base_income'?'Base salary':type==='transfer'?'Transfer / internal':type==='ignore'?'Ignore':'Income adjustment'}</span>`;
     const monthRow = auditSortMode === 'chrono' && auditMonthKey(t) !== lastAuditMonth
       ? (()=>{ lastAuditMonth = auditMonthKey(t); return `<tr><td colspan="7" class="audit-month-row">${auditMonthLabel(t)}</td></tr>`; })()
@@ -2604,12 +3412,12 @@ function renderAuditSummary(c){
     return monthRow + `
     <tr>
       <td><input value="${t.date||''}" onchange="setAuditField('${t.id}','date',this.value)"></td>
-      <td class="audit-source-cell"><span class="audit-source-pill" title="${safeSource}">${sourceLabel}</span></td>
-      <td class="audit-desc-cell"><div class="source-peek"><input value="${safeDesc}" onchange="setAuditField('${t.id}','description',this.value)"><span class="source-badge">i</span><div class="source-pop"><div class="source-meta">${safeSource}${t.sourcePage?' · page '+t.sourcePage:''}${t.sourceType?' · '+t.sourceType.replace('_',' '):''}</div><div class="source-line">${safeContext}</div></div></div>${duplicateNote?`<div class="bucket-hint" style="color:#D85A30;margin-top:3px">${escAttr(duplicateNote)}</div>`:''}</td>
+      <td class="audit-source-cell"><span class="audit-source-pill" title="${safeStatementTitle}">${sourceLabel}</span></td>
+      <td class="audit-desc-cell"><div class="source-peek"><input value="${safeDesc}" onchange="setAuditField('${t.id}','description',this.value)"><span class="source-badge">i</span><div class="source-pop"><div class="source-meta">${safeStatement}${t.sourcePage?' · page '+t.sourcePage:''}${t.sourceType?' · '+t.sourceType.replace('_',' '):''}</div><div class="source-line">${safeContext}</div></div></div>${duplicateNote?`<div class="bucket-hint" style="color:#D85A30;margin-top:3px">${escAttr(duplicateNote)}</div>`:''}</td>
       <td><input type="number" value="${parseFloat(t.amount)||0}" onchange="setAuditField('${t.id}','amount',this.value)"></td>
-      <td><select onchange="setAuditField('${t.id}','auditType',this.value)">${auditTypeOptions(type)}</select></td>
+      <td><select class="income-select" onchange="setAuditField('${t.id}','auditType',this.value)" style="${auditTypeSelectStyle(type)}">${auditTypeOptions(type)}</select></td>
       <td>${targetControl}</td>
-      <td><button class="goal-del" onclick="removeAuditTransaction('${t.id}')">Remove</button></td>
+      <td><div class="audit-learn-cell">${reviewPill}${learnControl}<button class="goal-del" onclick="removeAuditTransaction('${t.id}')">Remove</button></div></td>
     </tr>`;
   }).join('');
   const wellnessBanner = wellnessRows ? `<div class="wellness-banner"><div class="wellness-title">Wellness spending recognized</div><div class="wellness-copy">${wellnessRows} audit row${wellnessRows===1?'':'s'} support health, fitness, or self-care goals.</div></div>` : '';
@@ -2621,15 +3429,15 @@ function renderAuditSummary(c){
 	      <div class="ledger-head" style="margin-bottom:6px">
           <div>
             <div class="ledger-title">Planned vs actual by bucket</div>
-            <div class="audit-status">Actual percentages use the current month/search filter and categorized Plan bucket rows.</div>
+            <div class="audit-status">Actuals are shown per month using the selected months, search filter, and categorized Plan bucket rows.</div>
           </div>
           <div class="inline-actions">
-            <button class="small-btn" onclick="applyActualBucketPercentages()">Use actual % as plan</button>
+            <button class="small-btn" onclick="applyActualBucketPercentages()">Use checked actual % as plan</button>
             ${auditAllocationUndo?.pcts?.length ? '<button class="small-btn" onclick="restorePreviousBucketPercentages()">Restore previous %</button>' : ''}
           </div>
         </div>
         ${allocationUndoNote}
-	      <table class="audit-table"><thead><tr><th>Bucket</th><th>Planned</th><th>Actual</th><th>Difference</th></tr></thead><tbody>${compareRows}</tbody></table>
+	      <table class="audit-table"><thead><tr><th>Bucket</th><th>Planned</th><th>Actual</th><th>Difference</th><th>Use</th></tr></thead><tbody>${compareRows}</tbody></table>
 	    </div>
       ${wellnessBanner}
 	    <div class="audit-panel">
@@ -2639,7 +3447,7 @@ function renderAuditSummary(c){
             <div class="audit-status">Filter by month to tune one planning budget, or use All months to review everything.</div>
           </div>
           <div class="inline-actions">
-            <select id="audit-month-filter" onchange="setAuditMonthFilter(this.value)" style="font-size:12px;max-width:150px">${monthOptions}</select>
+            ${auditMonthChecklist()}
             <input id="audit-search" type="search" value="${escAttr(auditSearchTerm)}" placeholder="Search audit" style="font-size:12px;max-width:190px" oninput="setAuditSearch(this.value,this.selectionStart)">
             <button class="small-btn" onclick="setAuditSortMode('original')" ${auditSortMode==='original'?'disabled':''}>Import order</button>
             <button class="small-btn" onclick="setAuditSortMode('chrono')" ${auditSortMode==='chrono'?'disabled':''}>Chronological</button>
@@ -2647,7 +3455,7 @@ function renderAuditSummary(c){
             <button class="small-btn" onclick="setAuditSortMode('amount')" ${auditSortMode==='amount'?'disabled':''}>Amount</button>
           </div>
         </div>
-	      <table class="audit-table"><thead><tr><th>Date</th><th class="audit-source-cell">Src</th><th class="audit-desc-cell">Description</th><th>Amount</th><th>Audit type</th><th>Match / bucket</th><th></th></tr></thead><tbody>${txRows || '<tr><td colspan="7">No transactions loaded.</td></tr>'}</tbody></table>
+	      <table class="audit-table"><thead><tr><th>Date</th><th class="audit-source-cell">Source</th><th class="audit-desc-cell">Description</th><th>Amount</th><th>Audit type</th><th>Match / bucket</th><th></th></tr></thead><tbody>${txRows || '<tr><td colspan="7">No transactions loaded.</td></tr>'}</tbody></table>
 	    </div>`;
 }
 
@@ -2672,7 +3480,7 @@ function setGoalField(id, field, val){
 }
 
 function bucketOptions(selectedId){
-  return buckets.map(b=>`<option value="${b.id}"${b.id===selectedId?' selected':''}>${b.name}</option>`).join('');
+  return buckets.map(b=>`<option value="${b.id}"${b.id===selectedId?' selected':''}${bucketOptionStyle(b)}>${escAttr(b.name)}</option>`).join('');
 }
 function goalVisualLabel(visual){
   return {balloon:'Hot air balloon',castle:'Castle',plant:'Growing tree'}[visual] || 'Hot air balloon';
@@ -2739,8 +3547,10 @@ function renderBucketGoals(){
   const picker = document.getElementById('bucket-goal-picker');
   const available = buckets.filter(b=>!bucketGoalIds.includes(b.id));
   if(picker){
+    picker.className = 'bucket-select';
+    picker.style.cssText = 'font-size:12px;max-width:180px';
     picker.innerHTML = available.length
-      ? available.map(b=>`<option value="${b.id}">${b.name}</option>`).join('')
+      ? available.map(b=>`<option value="${b.id}"${bucketOptionStyle(b)}>${escAttr(b.name)}</option>`).join('')
       : '<option value="">All buckets added</option>';
     picker.disabled = available.length===0;
   }
@@ -2807,7 +3617,7 @@ function renderGoals(){
       <div class="goal-row">
         <div>
           <input type="text" value="${g.label}" style="font-size:13px;width:100%;padding:2px 4px;border-radius:4px;margin-bottom:4px" onchange="setGoalField(${g.id},'label',this.value)">
-          <div class="goal-phase">When reached -> move <select onchange="setGoalField(${g.id},'fromBucket',this.value)" style="font-size:11px">${bucketOptions(g.fromBucket)}</select> % to <select onchange="setGoalField(${g.id},'toBucket',this.value)" style="font-size:11px">${bucketOptions(g.toBucket)}</select></div>
+          <div class="goal-phase">When reached -> move <select class="bucket-select" onchange="setGoalField(${g.id},'fromBucket',this.value)" style="font-size:11px;${bucketSelectStyle(g.fromBucket)}">${bucketOptions(g.fromBucket)}</select> % to <select class="bucket-select" onchange="setGoalField(${g.id},'toBucket',this.value)" style="font-size:11px;${bucketSelectStyle(g.toBucket)}">${bucketOptions(g.toBucket)}</select></div>
           <div class="bucket-hint">Action rule for redirects. Starting balance: ${fmt(current)}</div>
         </div>
         <div>
@@ -2836,8 +3646,7 @@ function compute(){
   const income  = parseFloat(document.getElementById('f-income').value)||0;
   const baseDebt= parseFloat(document.getElementById('f-debt').value)||0;
   const rate    = parseFloat(document.getElementById('f-rate').value)||0;
-  const savings = parseFloat(document.getElementById('f-savings').value)||0;
-  const iRate   = parseFloat(document.getElementById('f-irate').value)||7;
+  const iRate   = expectedInvestmentAnnualRate(income);
   const months  = projYears * 12;
   const ir = iRate/100/12;
   const debtInputs = getDebtInputs(baseDebt,rate);
@@ -2864,14 +3673,14 @@ function compute(){
   const goalTrackers = goals.map(g=>({...g, accumulated:0, triggered:false}));
 
   let debts = debtInputs.map(d=>({...d}));
-  let portfolio=currentAccountBalance(), efund=savings;
+  let portfolio=currentAccountBalance();
   let debtFreeMonth=null;
   const debtSeries=[], investSeries=[];
   const bucketSeries = {};
   const bucketBalances = {};
   buckets.forEach(b=>{
     const detailBalance = parseFloat(bucketDetails(b).currentBalance)||0;
-    bucketBalances[b.id] = b.id === efBucket?.id && detailBalance===0 ? savings : detailBalance;
+    bucketBalances[b.id] = detailBalance;
     bucketSeries[b.id] = [];
   });
   const totalAssetSeries = [];
@@ -2926,7 +3735,6 @@ function compute(){
     });
 
     const currentDebtPay   = debtPaymentBuckets.reduce((s,b)=>s+income*((activePct[b.id]||0)/100),0) + eventDebtPay;
-    const currentInvestAmt = income * activeInvestmentPct()/100 + eventInvest + employerMatch;
 
     // Debt
     let totalDebt = debts.reduce((s,d)=>s+d.balance,0);
@@ -2935,19 +3743,44 @@ function compute(){
       totalDebt = debts.reduce((s,d)=>s+d.balance,0);
       if(totalDebt<=0.01){ if(!debtFreeMonth) debtFreeMonth=monthNumber; debts.forEach(d=>d.balance=0); totalDebt=0; }
     }
+
+    // Debt payoff buckets do not hold balances. Phase switches from debt buckets
+    // therefore trigger from actual debt paid down.
+    const debtPaidDown = Math.max(0,startingDebt-totalDebt);
+    goalTrackers.forEach(g=>{
+      if(g.triggered) return;
+      const fromB = buckets.find(b=>b.id===g.fromBucket);
+      const toB   = buckets.find(b=>b.id===g.toBucket);
+      const target = parseFloat(g.target)||0;
+      if(!fromB||!toB||!isDebtBucket(fromB)||target<=0) return;
+      g.accumulated = Math.min(target,debtPaidDown);
+      if(debtPaidDown >= target){
+        g.triggered = true;
+        g.triggeredMonth = monthNumber;
+        const movedPct = activePct[fromB.id] || 0;
+        const targetId = resolvedBucketId(toB.id);
+        g.resolvedToBucket = targetId;
+        activePct[fromB.id] = 0;
+        activePct[targetId] = (activePct[targetId]||0) + movedPct;
+        redirectMap[fromB.id] = targetId;
+        g.accumulated = target;
+      }
+    });
+
     if(totalDebt<=0 && debtFreeMonth && monthNumber === debtFreeMonth){
       // Redirect debt payments after payoff.
       debtPaymentBuckets.forEach(b=>{
         if(!b.id || b.id===debtRedirectBucketId) return;
-        activePct[debtRedirectBucketId] = (activePct[debtRedirectBucketId]||0) + (activePct[b.id]||0);
+        const targetId = resolvedBucketId(debtRedirectBucketId);
+        activePct[targetId] = (activePct[targetId]||0) + (activePct[b.id]||0);
         activePct[b.id] = 0;
-        redirectMap[b.id] = debtRedirectBucketId;
+        redirectMap[b.id] = targetId;
       });
     }
 
     // Invest
+    const currentInvestAmt = income * activeInvestmentPct()/100 + eventInvest + employerMatch;
     portfolio = portfolio*(1+ir) + currentInvestAmt;
-    efund += efAmt + eventEmergency;
     if(eventExpense>0) portfolio = Math.max(0,portfolio-eventExpense);
     buckets.forEach(b=>{
       if(!isAssetBucket(b)) return;
@@ -2956,26 +3789,33 @@ function compute(){
       if(bucketDetails(b).accountType === '401k') bucketBalances[b.id] += employerMatchForBucket(b,income);
     });
 
-    // Check goals against actual bucket balances, cap completed basins, then redirect future inflows.
+    // Check goals against actual bucket balances, then redirect future inflows.
     goalTrackers.forEach(g=>{
       if(g.triggered) return;
       const fromB = buckets.find(b=>b.id===g.fromBucket);
       const toB   = buckets.find(b=>b.id===g.toBucket);
       if(!fromB||!toB) return;
+      if(isDebtBucket(fromB)) return;
       const currentBalance = bucketBalances[fromB.id] || 0;
       g.accumulated = currentBalance;
       if(currentBalance >= g.target){
         g.triggered = true;
         g.triggeredMonth = monthNumber;
-        const overflow = Math.max(0,currentBalance - g.target);
-        bucketBalances[fromB.id] = g.target;
-        bucketBalances[toB.id] = (bucketBalances[toB.id]||0) + overflow;
+        const targetId = resolvedBucketId(toB.id);
+        g.resolvedToBucket = targetId;
         const movedPct = activePct[fromB.id] || 0;
         activePct[fromB.id] = 0;
-        activePct[toB.id] = (activePct[toB.id]||0) + movedPct;
-        redirectMap[fromB.id] = toB.id;
+        activePct[targetId] = (activePct[targetId]||0) + movedPct;
+        redirectMap[fromB.id] = targetId;
         g.accumulated = g.target;
       }
+    });
+    goalTrackers.forEach(g=>{
+      if(!g.triggered) return;
+      const fromB = buckets.find(b=>b.id===g.fromBucket);
+      if(!fromB || isDebtBucket(fromB)) return;
+      const target = parseFloat(g.target)||0;
+      g.accumulated = target;
     });
     buckets.forEach(b=>bucketSeries[b.id].push(Math.round(bucketBalances[b.id]||0)));
     const nonInvestmentAssets = buckets.reduce((s,b)=>s+(isAssetBucket(b)&&!isInvestmentBucket(b)?(bucketBalances[b.id]||0):0),0);
@@ -2994,6 +3834,62 @@ function compute(){
            currentAccountBalance:currentAccountBalance(), employerMatch, bucketSeries, totalAssetSeries };
 }
 
+function portfolioForecastCone(c){
+  const baseAnnual = parseFloat(c.iRate)||0;
+  const lowAnnual = Math.max(0,baseAnnual - 3);
+  const highAnnual = baseAnnual + 3;
+  const baseMonthly = baseAnnual/100/12;
+  const lowMonthly = lowAnnual/100/12;
+  const highMonthly = highAnnual/100/12;
+  let low = parseFloat(c.currentAccountBalance)||0;
+  let high = parseFloat(c.currentAccountBalance)||0;
+  const lowSeries = [];
+  const highSeries = [];
+  const totalLowSeries = [];
+  const totalHighSeries = [];
+  const nonInvestmentForecasts = buckets
+    .filter(b=>isAssetBucket(b) && !isInvestmentBucket(b))
+    .map(b=>({bucket:b, cone:bucketSupportsGrowth(b) ? bucketForecastCone(c,b) : null, series:c.bucketSeries?.[b.id] || []}));
+  for(let i=0;i<c.months;i++){
+    const priorBase = i ? (c.investSeries[i-1]||0) : (parseFloat(c.currentAccountBalance)||0);
+    const baseWithGrowth = priorBase*(1+baseMonthly);
+    const contribution = (c.investSeries[i]||0) - baseWithGrowth;
+    low = Math.max(0,low*(1+lowMonthly) + contribution);
+    high = Math.max(0,high*(1+highMonthly) + contribution);
+    lowSeries.push(Math.round(low));
+    highSeries.push(Math.round(high));
+    const nonInvestmentLow = nonInvestmentForecasts.reduce((s,item)=>s+(item.cone ? (item.cone.lowSeries[i]||0) : (item.series[i]||0)),0);
+    const nonInvestmentHigh = nonInvestmentForecasts.reduce((s,item)=>s+(item.cone ? (item.cone.highSeries[i]||0) : (item.series[i]||0)),0);
+    totalLowSeries.push(Math.round(low + nonInvestmentLow));
+    totalHighSeries.push(Math.round(high + nonInvestmentHigh));
+  }
+  return {lowSeries,highSeries,totalLowSeries,totalHighSeries,lowAnnual,highAnnual};
+}
+function bucketForecastCone(c,b){
+  const series = c.bucketSeries?.[b.id] || [];
+  const baseAnnual = (monthlyBucketRate(b,(parseFloat(c.iRate)||0)/100/12) * 12 * 100) || 0;
+  const risk = bucketRiskRange(b);
+  const lowAnnual = Math.max(0,baseAnnual - risk);
+  const highAnnual = baseAnnual + risk;
+  const baseMonthly = baseAnnual/100/12;
+  const lowMonthly = lowAnnual/100/12;
+  const highMonthly = highAnnual/100/12;
+  let low = parseFloat(bucketDetails(b).currentBalance)||0;
+  let high = parseFloat(bucketDetails(b).currentBalance)||0;
+  const lowSeries = [];
+  const highSeries = [];
+  series.forEach((value,i)=>{
+    const priorBase = i ? (series[i-1]||0) : (parseFloat(bucketDetails(b).currentBalance)||0);
+    const baseWithGrowth = priorBase*(1+baseMonthly);
+    const contribution = (value||0) - baseWithGrowth;
+    low = Math.max(0,low*(1+lowMonthly) + contribution);
+    high = Math.max(0,high*(1+highMonthly) + contribution);
+    lowSeries.push(Math.round(low));
+    highSeries.push(Math.round(high));
+  });
+  return {lowSeries,highSeries,lowAnnual,highAnnual,risk};
+}
+
 function renderMilestones(c){
   const dfVal = c.debt===0?'No debt':c.debtFreeMonth
     ? fmtDuration(c.debtFreeMonth)+' ('+monthStamp(c.debtFreeMonth)+')'
@@ -3004,7 +3900,11 @@ function renderMilestones(c){
     {lbl:yr10lbl,                val:fmt(c.portfolio10),              color:'#1D9E75'},
     {lbl:'Passive income (4%)',  val:fmt(c.portfolio10*0.04)+'/yr',  color:'#1D9E75'},
   ];
-  if(c.debtFreeMonth) ms.push({
+  const hasDebtPhaseRedirect = (c.goalTrackers||[]).some(g=>{
+    const fromB = buckets.find(b=>b.id===g.fromBucket);
+    return g.triggered && fromB && isDebtBucket(fromB);
+  });
+  if(c.debtFreeMonth && !hasDebtPhaseRedirect) ms.push({
     lbl:'Debt payment redirects to '+c.debtRedirectBucketName,
     val:monthStamp(c.debtFreeMonth+1),
     color:'#534AB7'
@@ -3013,7 +3913,7 @@ function renderMilestones(c){
   c.goalTrackers.forEach(g=>{
     if(g.triggered){
       const fromB = buckets.find(b=>b.id===g.fromBucket);
-      const toB = buckets.find(b=>b.id===g.toBucket);
+      const toB = buckets.find(b=>b.id===(g.resolvedToBucket || g.toBucket));
       ms.push({lbl:g.label+' reached',val:monthStamp(g.triggeredMonth),color:'#534AB7'});
       if(fromB && toB) ms.push({lbl:`${fromB.name} allocation redirects to ${toB.name}`,val:monthStamp(g.triggeredMonth+1),color:toB.color});
     }
@@ -3046,86 +3946,19 @@ function cycleGoalVisual(kind,id){
   update();
 }
 function renderGoalArt(kind,pct,color,id){
-  const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g,'');
   const p = Math.max(0,Math.min(100,pct));
-  if(kind === 'castle'){
-    const brickRows = [
-      {y:80, xs:[14,25,58,69]},
-      {y:70, xs:[19,30,52,63]},
-      {y:60, xs:[14,25,36,47,58,69]},
-      {y:50, xs:[19,30,41,52,63]},
-      {y:40, xs:[30,41,52]}
-    ];
-    let brickIndex = 0;
-    const totalBricks = brickRows.reduce((s,row)=>s+row.xs.length,0);
-    const builtProgress = totalBricks*p/100;
-    const brickEls = brickRows.map(row=>row.xs.map(x=>{
-      const fill = Math.max(0,Math.min(1,builtProgress-brickIndex++));
-      return `<rect class="castle-block" x="${x}" y="${row.y}" width="10" height="8" rx="1.6" fill="${fill > 0 ? color : '#fff'}" stroke="${color}" stroke-width="1" opacity="${.14+fill*.72}"/>`;
-    }).join('')).join('');
-    const topOpacity = Math.max(.12,Math.min(.92,(p-58)/24));
-    const doorOpacity = Math.max(.22,Math.min(.92,(p-18)/30));
-    const archOpacity = Math.max(.16,Math.min(.85,(p-8)/24));
-    const flagOpacity = p >= 99.5 ? .95 : 0;
-    return `<div class="goal-art"><svg viewBox="0 0 92 104" aria-hidden="true">
-      <path d="M14 90h64" stroke="#88878055" stroke-width="2" stroke-linecap="round"/>
-      <path d="M38 88V75c0-8 16-8 16 0v13Z" fill="#fffdf8" stroke="${color}" stroke-width="1.2" opacity="${archOpacity}"/>
-      ${brickEls}
-      <path d="M26 39l20-19 20 19" fill="#fff" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" opacity="${topOpacity}"/>
-      <path d="M42 88V76c0-4 8-4 8 0v12" fill="none" stroke="${color}" stroke-width="1" opacity="${doorOpacity*.8}"/>
-      <circle cx="31" cy="57" r="2" fill="#fffdf8" stroke="${color}" stroke-width="1" opacity="${Math.max(.1,Math.min(.72,(p-34)/20))}"/>
-      <circle cx="61" cy="57" r="2" fill="#fffdf8" stroke="${color}" stroke-width="1" opacity="${Math.max(.1,Math.min(.72,(p-34)/20))}"/>
-      <path d="M46 20V8M46 9h17l-4 4 4 4H46" fill="${color}" stroke="${color}" stroke-width="1" opacity="${flagOpacity}"/>
-    </svg></div>`;
-  }
-  if(kind === 'plant'){
-    const sprout = Math.max(0,Math.min(1,p/18));
-    const trunk = Math.max(0,Math.min(1,p/40));
-    const branches = Math.max(0,Math.min(1,(p-28)/28));
-    const canopy = Math.max(0,Math.min(1,(p-44)/26));
-    const flowers = Math.max(0,Math.min(1,(p-66)/18));
-    const fruit = Math.max(0,Math.min(1,(p-84)/16));
-    const trunkTop = 82 - trunk*42;
-    const canopyScale = .35 + canopy*.72;
-    const saplingOpacity = Math.max(0,Math.min(1,(34-p)/26));
-    const seedOpacity = Math.max(0,Math.min(.72,(18-p)/18));
-    return `<div class="goal-art"><svg viewBox="0 0 92 104" aria-hidden="true">
-      <path d="M18 88C32 84 58 84 74 88" stroke="#8a6a4855" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <ellipse cx="46" cy="83" rx="6" ry="4" fill="#8a6a48" opacity="${seedOpacity}"/>
-      <path d="M46 84C46 82 46 ${84-sprout*9} 46 ${82-sprout*16}" stroke="${color}" stroke-width="${1.4+sprout*.8}" fill="none" stroke-linecap="round" opacity="${Math.max(.12,sprout)}"/>
-      <path class="plant-grow" d="M46 84C46 72 46 ${trunkTop+16} 46 ${trunkTop}" stroke="#8a6a48" stroke-width="${2.6+trunk*3.6}" fill="none" stroke-linecap="round" opacity="${.2+trunk*.8}"/>
-      <path d="M46 84C46 74 46 ${trunkTop+14} 46 ${trunkTop+2}" stroke="${color}" stroke-width="${2.2+trunk*1.2}" fill="none" stroke-linecap="round" opacity="${saplingOpacity}"/>
-      <path d="M46 ${trunkTop+18}C38 ${trunkTop+12} 33 ${trunkTop+8} 29 ${trunkTop+1}" stroke="#8a6a48" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="${branches}"/>
-      <path d="M47 ${trunkTop+16}C56 ${trunkTop+9} 62 ${trunkTop+4} 67 ${trunkTop-5}" stroke="#8a6a48" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="${branches}"/>
-      <path d="M46 ${trunkTop+6}C42 ${trunkTop-4} 39 ${trunkTop-12} 37 ${trunkTop-20}" stroke="#8a6a48" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="${branches*.85}"/>
-      <g transform="translate(46 ${trunkTop-8}) scale(${canopyScale})" opacity="${.08+canopy*.92}">
-        <circle cx="-15" cy="6" r="15" fill="${color}" opacity=".68"/>
-        <circle cx="2" cy="-4" r="19" fill="${color}" opacity=".78"/>
-        <circle cx="18" cy="8" r="15" fill="${color}" opacity=".64"/>
-        <circle cx="0" cy="14" r="16" fill="${color}" opacity=".58"/>
-      </g>
-      <g opacity="${flowers}">
-        <circle cx="33" cy="${trunkTop-6}" r="3" fill="#f7a6c8"/><circle cx="57" cy="${trunkTop-18}" r="3" fill="#f7a6c8"/><circle cx="63" cy="${trunkTop+2}" r="2.8" fill="#f7a6c8"/>
-      </g>
-      <g opacity="${fruit}">
-        <circle cx="38" cy="${trunkTop+4}" r="3.2" fill="#d85a30"/><circle cx="52" cy="${trunkTop-12}" r="3.2" fill="#d85a30"/><circle cx="60" cy="${trunkTop+12}" r="3.2" fill="#d85a30"/>
-      </g>
-    </svg></div>`;
-  }
-  const balloonScale = .72 + p*.28/100;
-  const fillH = p >= 99.95 ? 80 : Math.round(80*p/100);
-  const fillY = 88 - fillH;
-  return `<div class="goal-art"><svg viewBox="0 0 92 104" aria-hidden="true">
-    <defs>
-      <clipPath id="clip-${safeId}"><path d="M46 8C25 8 14 22 14 40c0 21 18 36 32 47 14-11 32-26 32-47C78 22 67 8 46 8Z"/></clipPath>
-    </defs>
-    <g transform="translate(46 48) scale(${balloonScale}) translate(-46 -48)">
-      <path d="M46 8C25 8 14 22 14 40c0 21 18 36 32 47 14-11 32-26 32-47C78 22 67 8 46 8Z" fill="#fff" stroke="${color}" stroke-width="2.6"/>
-      <rect class="balloon-fill" x="12" y="${fillY}" width="68" height="${fillH}" fill="${color}" clip-path="url(#clip-${safeId})" opacity=".68"/>
-    </g>
-    <path d="M36 88h20l-5 10H41Z" fill="#c9834b" stroke="#8f5638" stroke-width="1.1"/>
-    <line x1="38" y1="86" x2="32" y2="100" stroke="#8f7f73" stroke-width="1"/><line x1="54" y1="86" x2="60" y2="100" stroke="#8f7f73" stroke-width="1"/>
-  </svg></div>`;
+  const art = {
+    balloon:'goal-balloon.png',
+    castle:'goal-castle.png',
+    plant:'goal-plant.png'
+  }[kind] || 'goal-balloon.png';
+  const completeClass = p >= 99.95 ? ' complete' : '';
+  return `<div class="goal-png-art kind-${kind}${completeClass}" style="--goal-progress:${p}">
+    <div class="goal-png-stack">
+      <img class="goal-png-bg" src="assets/${art}" alt="">
+      <img class="goal-png-fill" src="assets/${art}" alt="">
+    </div>
+  </div>`;
 }
 function renderGoalBalloons(c){
   const el = document.getElementById('goal-balloons');
@@ -3152,8 +3985,9 @@ function renderGoalBalloons(c){
 	    const series = isDebtGoal ? (c.debtSeries || []) : (c.bucketSeries[b.id] || []);
 	    const remainingDebt = isDebtGoal ? (series[idx] || 0) : 0;
 	    const debtPaid = isDebtGoal ? Math.max(0,(c.debt||0)-remainingDebt) : 0;
-	    const value = isDebtGoal ? Math.min(target,debtPaid) : (series[idx] || 0);
-	    const pct = target>0 ? Math.max(0,Math.min(100,value/target*100)) : 0;
+	    const actualValue = isDebtGoal ? Math.min(target,debtPaid) : (series[idx] || 0);
+	    const progressValue = Math.min(target,actualValue);
+	    const pct = target>0 ? Math.max(0,Math.min(100,progressValue/target*100)) : 0;
 	    const tracker = card.goal ? c.goalTrackers.find(g=>g.id===card.goal.id) : null;
 	    const subtitle = tracker?.triggered
 	      ? `Reached ${monthStamp(tracker.triggeredMonth)}`
@@ -3170,7 +4004,7 @@ function renderGoalBalloons(c){
       </button>
       <div class="ms-lbl">${card.label}</div>
       <div class="ms-val" style="color:${b.color}">${fmtPct(pct)}%</div>
-      <div class="bucket-hint">${fmt(value)} of ${fmt(target)} · ${subtitle}</div>
+      <div class="bucket-hint">${fmt(actualValue)} balance · ${fmt(progressValue)} of ${fmt(target)} goal · ${subtitle}</div>
     </div>`;
   }).join('');
 }
@@ -3223,7 +4057,12 @@ function drawFallbackProjection(c){
   const {ctx,w,h} = prepCanvas(canvas);
   const pad = 28;
   const focusIdx = Math.max(0,Math.min(selectedFocusMonth()-1,c.months-1));
-  const maxVal = Math.max(1,...c.debtSeries,...c.investSeries);
+  const showPortfolio = chartToggleChecked('show-portfolio-assets');
+  const showTotal = chartToggleChecked('show-total-assets');
+  const showPortfolioCone = showPortfolio && chartToggleChecked('show-portfolio-cone');
+  const showTotalCone = showTotal && chartToggleChecked('show-total-cone');
+  const cone = (showPortfolioCone || showTotalCone) ? portfolioForecastCone(c) : null;
+  const maxVal = Math.max(1,...c.debtSeries,...c.investSeries,...(showTotal?(c.totalAssetSeries||[]):[]),...(showPortfolioCone?(cone?.highSeries||[]):[]),...(showTotalCone?(cone?.totalHighSeries||[]):[]));
   const plotW = Math.max(1,w-pad*1.5), plotH = Math.max(1,h-pad*1.5);
   function point(series,i){
     const x = pad + (i/Math.max(1,series.length-1))*plotW;
@@ -3237,18 +4076,25 @@ function drawFallbackProjection(c){
     series.forEach((_,i)=>{ const p=point(series,i); if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); });
     ctx.stroke(); ctx.setLineDash([]);
   }
+  function band(lowSeries,highSeries,color){
+    ctx.beginPath();
+    highSeries.forEach((_,i)=>{ const p=point(highSeries,i); if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); });
+    for(let i=lowSeries.length-1;i>=0;i--){ const p=point(lowSeries,i); ctx.lineTo(p.x,p.y); }
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+  if(cone && showPortfolioCone) band(cone.lowSeries,cone.highSeries,'rgba(29,158,117,.13)');
+  if(cone && showTotalCone) band(cone.totalLowSeries,cone.totalHighSeries,'rgba(83,74,183,.12)');
   line(c.debtSeries,'#D85A30',true);
-  line(c.investSeries,'#1D9E75',false);
+  if(showPortfolio) line(c.investSeries,'#1D9E75',false);
+  if(showTotal) line(c.totalAssetSeries,'#534AB7',false);
   const focusX = point(c.debtSeries,focusIdx).x;
   ctx.strokeStyle = '#88878066'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(focusX,pad*.6); ctx.lineTo(focusX,h-pad); ctx.stroke(); ctx.setLineDash([]);
 }
 
 function renderAllocationChart(c){
   const chartBuckets = allocationChartBuckets();
-  const centerPct = document.getElementById('allocation-center-pct');
-  const centerDollars = document.getElementById('allocation-center-dollars');
-  if(centerPct) centerPct.textContent = fmtPct(getTotal())+'%';
-  if(centerDollars) centerDollars.textContent = fmt(c.income*getTotal()/100)+'/mo';
   document.getElementById('allocation-leg').innerHTML = chartBuckets.map(b=>`
     <span style="display:flex;align-items:center;gap:6px">
       <span style="width:10px;height:10px;border-radius:3px;background:${b.color};border:${b.unallocated?'1px solid #bbb':'0'};display:inline-block"></span>
@@ -3257,7 +4103,7 @@ function renderAllocationChart(c){
 
   if(typeof Chart === 'undefined'){ drawFallbackAllocation(c); return; }
   if(allocationChart) allocationChart.destroy();
-  allocationChart = new Chart(document.getElementById('allocation-chart'),{
+  allocationChart = safeCreateChart(document.getElementById('allocation-chart'),{
     type:'doughnut',
     data:{labels:chartBuckets.map(b=>b.name),datasets:[{
       data:chartBuckets.map(b=>b.pct),
@@ -3278,27 +4124,74 @@ function renderAllocationChart(c){
         }
       }}}
     }
-  });
+  },()=>drawFallbackAllocation(c));
+}
+
+function safeCreateChart(canvas,config,fallback){
+  try{
+    return new Chart(canvas,config);
+  }catch(err){
+    console.warn('Chart render fallback:', err);
+    if(typeof fallback === 'function') fallback();
+    return null;
+  }
 }
 
 function renderChart(c){
   const focusIdx = Math.max(0,Math.min(selectedFocusMonth()-1,c.months-1));
+  const showPortfolio = chartToggleChecked('show-portfolio-assets');
+  const showTotal = chartToggleChecked('show-total-assets');
+  const showPortfolioCone = showPortfolio && chartToggleChecked('show-portfolio-cone');
+  const showTotalCone = showTotal && chartToggleChecked('show-total-cone');
+  const show401k = chartToggleChecked('show-401k-assets');
+  const show401kCone = show401k && chartToggleChecked('show-401k-cone');
+  const showEmergency = chartToggleChecked('show-emergency-assets');
+  const showEmergencyCone = showEmergency && chartToggleChecked('show-emergency-cone');
+  const showGoals = chartToggleChecked('show-goal-assets');
+  const showGoalCone = showGoals && chartToggleChecked('show-goal-cone');
   const datasets = [
     {label:'Debt',data:c.debtSeries,borderColor:'#D85A30',backgroundColor:'#D85A3015',fill:true,tension:.4,pointRadius:0,borderWidth:2,borderDash:[6,3]},
-    {label:'Portfolio',data:c.investSeries,borderColor:'#1D9E75',backgroundColor:'#1D9E7515',fill:false,tension:.4,pointRadius:0,borderWidth:2},
   ];
-  if(document.getElementById('show-total-assets')?.checked) datasets.push({label:'Total assets',data:c.totalAssetSeries,borderColor:'#534AB7',backgroundColor:'#534AB715',fill:false,tension:.4,pointRadius:0,borderWidth:2});
-  if(document.getElementById('show-401k-assets')?.checked) buckets.filter(b=>bucketDetails(b).accountType==='401k').forEach(b=>datasets.push({label:b.name,data:c.bucketSeries[b.id]||[],borderColor:b.color,backgroundColor:b.color+'15',fill:false,tension:.4,pointRadius:0,borderWidth:2}));
-  if(document.getElementById('show-emergency-assets')?.checked) buckets.filter(b=>(b.name||'').toLowerCase().includes('emergency')).forEach(b=>datasets.push({label:b.name,data:c.bucketSeries[b.id]||[],borderColor:b.color,backgroundColor:b.color+'15',fill:false,tension:.4,pointRadius:0,borderWidth:2}));
-  if(document.getElementById('show-goal-assets')?.checked) buckets.filter(b=>isBucketGoal(b)).forEach(b=>datasets.push({label:b.name,data:c.bucketSeries[b.id]||[],borderColor:b.color,backgroundColor:b.color+'15',fill:false,tension:.4,pointRadius:0,borderWidth:2,borderDash:[3,3]}));
+  const cone = (showPortfolioCone || showTotalCone) ? portfolioForecastCone(c) : null;
+  if(cone && showPortfolioCone){
+    datasets.push(
+      {label:`Low forecast (${fmtPct(cone.lowAnnual)}%)`,data:cone.lowSeries,borderColor:'rgba(29,158,117,0)',backgroundColor:'rgba(29,158,117,.00)',fill:false,tension:.42,pointRadius:0,borderWidth:0,forecastCone:true},
+      {label:`Portfolio cone (${fmtPct(cone.lowAnnual)}%-${fmtPct(cone.highAnnual)}%)`,data:cone.highSeries,borderColor:'rgba(29,158,117,0)',backgroundColor:'rgba(29,158,117,.13)',fill:'-1',tension:.42,pointRadius:0,borderWidth:0,forecastCone:true,coneColor:'rgba(29,158,117,.14)'}
+    );
+  }
+  if(showPortfolio) datasets.push(
+    {label:'Portfolio',data:c.investSeries,borderColor:'#1D9E75',backgroundColor:'#1D9E7515',fill:false,tension:.4,pointRadius:0,borderWidth:2}
+  );
+  if(cone && showTotalCone){
+    datasets.push(
+      {label:`Low total forecast (${fmtPct(cone.lowAnnual)}%)`,data:cone.totalLowSeries,borderColor:'rgba(83,74,183,0)',backgroundColor:'rgba(83,74,183,.00)',fill:false,tension:.42,pointRadius:0,borderWidth:0,forecastCone:true},
+      {label:`Total assets cone (${fmtPct(cone.lowAnnual)}%-${fmtPct(cone.highAnnual)}%)`,data:cone.totalHighSeries,borderColor:'rgba(83,74,183,0)',backgroundColor:'rgba(83,74,183,.12)',fill:'-1',tension:.42,pointRadius:0,borderWidth:0,forecastCone:true,coneColor:'rgba(83,74,183,.12)'}
+    );
+  }
+  if(showTotal) datasets.push({label:'Total assets',data:c.totalAssetSeries,borderColor:'#534AB7',backgroundColor:'#534AB715',fill:false,tension:.4,pointRadius:0,borderWidth:2});
+  function addBucketLineWithCone(b,dash,showCone,coneColor){
+    if(showCone && bucketSupportsGrowth(b)){
+      const bc = bucketForecastCone(c,b);
+      datasets.push(
+        {label:`Low ${b.name} forecast`,data:bc.lowSeries,borderColor:'rgba(0,0,0,0)',backgroundColor:'rgba(0,0,0,0)',fill:false,tension:.42,pointRadius:0,borderWidth:0,forecastCone:true},
+        {label:`${b.name} range`,data:bc.highSeries,borderColor:'rgba(0,0,0,0)',backgroundColor:coneColor,fill:'-1',tension:.42,pointRadius:0,borderWidth:0,forecastCone:true,coneColor}
+      );
+    }
+    datasets.push({label:b.name,data:c.bucketSeries[b.id]||[],borderColor:b.color,backgroundColor:b.color+'15',fill:false,tension:.4,pointRadius:0,borderWidth:2,borderDash:Array.isArray(dash)?dash:[]});
+  }
+  if(show401k) buckets.filter(b=>bucketDetails(b).accountType==='401k').forEach(b=>addBucketLineWithCone(b,null,show401kCone,'rgba(103,162,31,.12)'));
+  if(showEmergency) buckets.filter(b=>(b.name||'').toLowerCase().includes('emergency')).forEach(b=>addBucketLineWithCone(b,null,showEmergencyCone,'rgba(245,166,35,.12)'));
+  if(showGoals) buckets.filter(b=>isBucketGoal(b)).forEach(b=>addBucketLineWithCone(b,[3,3],showGoalCone,'rgba(216,167,96,.12)'));
   datasets.forEach(d=>{ d.pointRadius = ctx=>ctx.dataIndex===focusIdx ? 4 : 0; d.pointHoverRadius = 5; });
-  document.getElementById('chart-leg').innerHTML=datasets.map(l=>`<span style="display:flex;align-items:center;gap:6px">
-    <svg width="20" height="2" aria-hidden="true"><line x1="0" y1="1" x2="20" y2="1" stroke="${l.borderColor}" stroke-width="2" ${l.borderDash?'stroke-dasharray="5,3"':''}></line></svg>${l.label}</span>`).join('');
+  document.getElementById('chart-leg').innerHTML=datasets.filter(l=>!l.forecastCone || l.label.includes('cone')).map(l=>{
+    const coneSwatch = l.forecastCone ? `<span style="width:20px;height:8px;border-radius:999px;background:${l.coneColor||'rgba(29,158,117,.14)'};border:1px solid ${l.coneColor||'rgba(29,158,117,.14)'};display:inline-block"></span>` : `<svg width="20" height="2" aria-hidden="true"><line x1="0" y1="1" x2="20" y2="1" stroke="${l.borderColor}" stroke-width="2" ${l.borderDash?'stroke-dasharray="5,3"':''}></line></svg>`;
+    return `<span style="display:flex;align-items:center;gap:6px">${coneSwatch}${l.label}</span>`;
+  }).join('');
 
   const labels=Array.from({length:c.months},(_,i)=>monthStamp(i+1));
   if(typeof Chart === 'undefined'){ drawFallbackProjection(c); return; }
   if(chart) chart.destroy();
-  chart=new Chart(document.getElementById('proj'),{
+  chart=safeCreateChart(document.getElementById('proj'),{
     type:'line',
     data:{labels,datasets},
     options:{
@@ -3306,14 +4199,14 @@ function renderChart(c){
       interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{
         title:items=>monthStamp(items[0].dataIndex+1),
-        label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw),
+        label:ctx=>ctx.dataset.forecastCone ? null : ' '+ctx.dataset.label+': '+fmt(ctx.raw),
       }}},
       scales:{
         x:{ticks:{autoSkip:false,maxRotation:0,callback:(_,i)=>i%12===0?formatMonthYear(i+1):'',color:'#88878055',font:{size:11}},grid:{display:false}},
         y:{ticks:{callback:v=>v>=1000?'$'+(v/1000).toFixed(0)+'k':'$'+v,color:'#88878055',font:{size:11}},grid:{color:'#88878020'}},
       }
     }
-  });
+  },()=>drawFallbackProjection(c));
 }
 
 function renderDollars(c){
@@ -3364,6 +4257,8 @@ function renderCalculations(c){
       <span class="calc-eq">monthly debt payment = income x total Debt payoff bucket % + debt event dollars</span>
       Current base debt payment: ${fmt(c.debtPay)}/mo.<br>${debtBucketLines}
       <span class="calc-eq">new debt = old debt + interest - payment</span>
+      Phase switches that start from a Debt payoff bucket use actual debt paid down, not a bucket balance, because debt payoff buckets send money out to reduce debt instead of storing it.
+      <span class="calc-eq">debt paid down = starting debt - current debt</span>
       Estimated debt-free timing: ${c.debtFreeMonth ? monthStamp(c.debtFreeMonth) : 'not within this projection'}.
     </div>
     <div class="calc-box">
@@ -3371,8 +4266,15 @@ function renderCalculations(c){
       Time is handled one month at a time. The variable <strong>t</strong> means the current month in the projection: t = 1 is ${formatMonthYear(1)}, t = 2 is ${formatMonthYear(2)}, and so on. Each month, the prior portfolio balance gets one month of growth, then that month's investing contribution is added.
       <span class="calc-eq">monthly return = annual return / 12</span>
       <span class="calc-eq">portfolio at month t = portfolio at month t-1 x (1 + monthly return) + contribution at month t</span>
-      Current base investing contribution: ${fmt(c.investAmt)}/mo. Expected annual return: ${fmtPct(c.iRate)}%, so the monthly return used here is about ${fmtPct(c.iRate/12)}%.
-      Account balances entered in bucket details start inside the portfolio projection. Current account balance included: ${fmt(c.currentAccountBalance)}.
+      Current base investing contribution: ${fmt(c.investAmt)}/mo. Buckets estimates an expected average annual growth rate of ${fmtPct(c.iRate)}% from the investment, retirement, and brokerage bucket details, so the monthly return used here is about ${fmtPct(c.iRate/12)}%.
+      Account balances entered in bucket details start inside the portfolio projection. Current investment account balance included: ${fmt(c.currentAccountBalance)}.
+    </div>
+    <div class="calc-box">
+      <strong>Forecast cone</strong><br>
+      The soft forecast bands show uncertainty around investment growth. The green band belongs to the Portfolio line. The purple band belongs to Total assets and uses the same investment range plus the non-investment asset balances already included in Total assets.
+      <span class="calc-eq">low forecast = expected growth - selected range</span>
+      <span class="calc-eq">high forecast = expected growth + selected range</span>
+      Individual savings, goal, retirement, and investment buckets can also use a range from Bucket Details. With the current portfolio settings, the portfolio range is about ${fmtPct(Math.max(0,(parseFloat(c.iRate)||0)-3))}% to ${fmtPct((parseFloat(c.iRate)||0)+3)}% annual growth before any bucket-specific ranges. It is a planning visual, not a guaranteed return.
     </div>
     <div class="calc-box">
       <strong>401(k) employer match</strong><br>
@@ -3441,8 +4343,10 @@ function update(){
   if(!isLoadingState) savePlannerState(false);
 }
 
-['f-income','f-debt','f-rate','f-savings','f-irate'].forEach(id=>
-  document.getElementById(id).addEventListener('input',update));
+['f-income','f-debt','f-rate'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input',update);
+});
 
 renderBuckets();
 renderBucketGoals();
